@@ -1,0 +1,6 @@
+title: Natural Language to MongoDB
+description: Hosted preview for the local LLM-first MongoDB workflow
+url: "https://damianrz.github.io"
+baseurl: "/text-to-nosql"
+markdown: kramdown
+permalink: pretty

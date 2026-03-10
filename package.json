@@ -1,0 +1,38 @@
+{
+  "name": "nl-to-mongo-chat",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "node ./scripts/setup-hooks.mjs",
+    "setup:local:ps": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-local.ps1",
+    "run:local:ps": "powershell -ExecutionPolicy Bypass -File ./scripts/run-local.ps1",
+    "setup:local:sh": "bash ./scripts/setup-local.sh",
+    "run:local:sh": "bash ./scripts/run-local.sh",
+    "test": "jest --runInBand --config jest.config.cjs",
+    "test:watch": "jest --watch --config jest.config.cjs"
+  },
+  "dependencies": {
+    "mongodb": "^7.0.0",
+    "next": "^14.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^24.10.1",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "mongodb-memory-server": "^10.3.0",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3"
+  }
+}

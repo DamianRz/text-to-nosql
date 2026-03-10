@@ -1,0 +1,125 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ site.title }}</title>
+    <meta name="description" content="{{ site.description }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">Natural → MongoDB</div>
+          <div class="brand-copy">
+            <h1>Natural Language to MongoDB</h1>
+            <p>Hosted product preview</p>
+          </div>
+        </div>
+
+        <section class="sidebar-section">
+          <div class="section-heading">Demos</div>
+          <div class="demo-nav" id="demo-nav"></div>
+        </section>
+
+        <section class="sidebar-section">
+          <div class="section-heading">Hosted mode</div>
+          <div class="sidebar-note">
+            Run the project locally to unlock live query generation, execution, and local model selection. Follow the repository README after cloning.
+          </div>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Workflow</p>
+            <h2>Natural Language → Query → Execution → Result</h2>
+          </div>
+          <div class="topbar-badges">
+            <span class="badge badge-warning">Hosted preview</span>
+            <span class="badge">Mocked data</span>
+          </div>
+        </header>
+
+        <section class="notice-card">
+          <p>
+            This public site is a static preview. To test every feature, run the application locally and follow the steps in the repository README.
+          </p>
+        </section>
+
+        <section class="pipeline">
+          <span>Input</span>
+          <span>Intent detection</span>
+          <span>Mongo query generation</span>
+          <span>Execution</span>
+          <span>Result</span>
+        </section>
+
+        <section class="workflow-grid">
+          <article class="panel">
+            <div class="panel-header">
+              <p class="panel-label">Natural language instruction</p>
+            </div>
+            <div class="readonly-editor" id="demo-input"></div>
+            <button class="button button-primary" type="button" disabled>Generate query</button>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <p class="panel-label">Generated MongoDB Query</p>
+              <span class="badge" id="demo-action"></span>
+            </div>
+            <pre class="code-block" id="demo-query"></pre>
+            <button class="button button-success" type="button" disabled>Run query</button>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <p class="panel-label">Execution result</p>
+            </div>
+            <pre class="result-block" id="demo-result"></pre>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <p class="panel-label">Execution logs</p>
+            </div>
+            <div class="log-list" id="demo-logs"></div>
+          </article>
+        </section>
+      </main>
+
+      <aside class="database-panel">
+        <div class="panel-header panel-header-column">
+          <p class="panel-label">Database viewer</p>
+          <p class="panel-subtitle">Seeded collections shown for the simulated local database.</p>
+        </div>
+
+        <div class="database-layout">
+          <section class="collections-panel">
+            <div class="subsection-label">Collections</div>
+            <div id="collection-list"></div>
+          </section>
+
+          <section class="documents-panel">
+            <div class="subsection-label">Documents</div>
+            <div class="documents-list" id="document-list"></div>
+          </section>
+        </div>
+      </aside>
+    </div>
+
+    <script src="{{ '/assets/app.js' | relative_url }}"></script>
+  </body>
+</html>

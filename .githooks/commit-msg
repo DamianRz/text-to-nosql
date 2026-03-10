@@ -1,0 +1,29 @@
+#!/bin/sh
+
+message_file="$1"
+first_line="$(sed -n '1p' "$message_file")"
+
+pattern='^\([^[:space:]].* \)\?\(feat\|fix\|refactor\|perf\|chore\|test\|docs\|style\|config\|build\|deploy\|security\|remove\)([a-z0-9-][a-z0-9-]*): [a-z].*$'
+
+if [ -z "$first_line" ]; then
+  echo "Commit message title is required." >&2
+  exit 1
+fi
+
+title_length=$(printf "%s" "$first_line" | wc -m | tr -d ' ')
+
+if [ "$title_length" -gt 72 ]; then
+  echo "Commit message title must be 72 characters or fewer." >&2
+  exit 1
+fi
+
+if printf "%s" "$first_line" | grep -Eq '\.$'; then
+  echo "Commit message title must not end with a period." >&2
+  exit 1
+fi
+
+if ! printf "%s" "$first_line" | grep -Eq "$pattern"; then
+  echo "Commit message title must follow <type>(<scope>): <description>." >&2
+  echo "Example: 📚 docs(readme): update installation instructions" >&2
+  exit 1
+fi
