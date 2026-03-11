@@ -2,35 +2,21 @@ import styled from "styled-components";
 
 export const Page = styled.main`
   min-height: 100vh;
-  padding: 18px;
-  background:
-    radial-gradient(circle at top left, ${({ theme }) => theme.colors.backgroundGlow}, transparent 30%),
-    linear-gradient(180deg, #fbfcfe 0%, ${({ theme }) => theme.colors.background} 100%);
+  padding: 40px 16px 64px;
+  background: ${({ theme }) => theme.colors.background};
   color: ${({ theme }) => theme.colors.textPrimary};
   font-family: var(--font-ui), "Inter", sans-serif;
 
   @media (max-width: 760px) {
-    padding: 12px;
+    padding: 24px 16px 48px;
   }
 `;
 
 export const Container = styled.section`
-  width: min(1440px, 100%);
-  min-height: calc(100vh - 36px);
+  width: min(800px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  grid-template-rows: auto auto auto;
-  gap: 18px;
-
-  @media (max-width: 1040px) {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-
-  @media (max-width: 760px) {
-    gap: 12px;
-  }
+  gap: 24px;
 `;
 
 export const Sidebar = styled.aside`
@@ -149,26 +135,8 @@ export const SidebarMetaItem = styled.div`
 `;
 
 export const Header = styled.header`
-  grid-column: 2;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 20px 22px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.card};
-  background: ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadow};
-
-  @media (max-width: 1040px) {
-    grid-column: 1;
-    order: 1;
-  }
-
-  @media (max-width: 760px) {
-    flex-direction: column;
-    padding: 16px;
-  }
+  display: grid;
+  gap: 6px;
 `;
 
 export const HeaderText = styled.div`
@@ -179,17 +147,17 @@ export const HeaderText = styled.div`
 
 export const Title = styled.h2`
   margin: 0;
-  font-size: 30px;
-  line-height: 1.08;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 export const Subtitle = styled.p`
   margin: 0;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
@@ -284,25 +252,13 @@ export const Select = styled.select`
 `;
 
 export const WorkspaceColumn = styled.section`
-  grid-column: 2;
   min-width: 0;
   display: grid;
   align-content: start;
-
-  @media (max-width: 1040px) {
-    grid-column: 1;
-    order: 2;
-  }
 `;
 
 export const ResultsColumn = styled.aside`
-  grid-column: 2;
   min-width: 0;
   display: grid;
   align-content: start;
-
-  @media (max-width: 1040px) {
-    grid-column: 1;
-    order: 3;
-  }
 `;

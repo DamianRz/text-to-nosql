@@ -2,8 +2,8 @@ import type { CopyDictionary, Language } from "./chatMongo.types";
 
 export const copyByLanguage: Record<Language, CopyDictionary> = {
   es: {
-    title: "Natural Language to MongoDB",
-    subtitle: "Panel de consultas MongoDB con revision visible antes de ejecutar.",
+    title: "Text to NoSQL",
+    subtitle: "Natural Language → MongoDB Query Generator",
     sidebarDemosTitle: "Ejemplos guiados",
     sidebarSettingsTitle: "Estado actual",
     instructionTitle: "1. Describe lo que quieres hacer",
@@ -128,6 +128,10 @@ export const copyByLanguage: Record<Language, CopyDictionary> = {
       "Confirma el resultado y mira la coleccion afectada debajo."
     ],
     quickStartTip: "Consejo: para probar rapido, usa un ejemplo guiado y luego editalo desde el cuadro principal.",
+    examplesTitle: "Ejemplos rapidos",
+    advancedOptionsLabel: "Opciones avanzadas",
+    copyQueryButton: "Copiar",
+    clearQueryButton: "Limpiar",
     selectedDemoTitle: "Ejemplo seleccionado",
     selectedDemoHelper: "Puedes cargarlo al editor o ejecutarlo completo para ver el flujo entero.",
     statusTitle: "Estado del flujo",
@@ -138,7 +142,7 @@ export const copyByLanguage: Record<Language, CopyDictionary> = {
     safeExecutionHint: "Esta accion no modifica datos. Puedes revisarla y ejecutarla cuando quieras.",
     destructiveExecutionHint: "Esta accion modifica datos. Revisa la coleccion y el filtro antes de confirmar.",
     initialMessage: "Escribe una instruccion. Ejemplo: mostrar en transactions donde category = comida",
-    placeholder: 'ej: mostrar los usuarios activos o agrega en transactions { "category": "food", "amount": 120 }',
+    placeholder: 'Describe la consulta... Ejemplo: buscar usuarios creados hoy.',
     generateButton: "Generar consulta",
     generatingButton: "Generando consulta...",
     executeButton: "Ejecutar consulta",
@@ -152,8 +156,8 @@ export const copyByLanguage: Record<Language, CopyDictionary> = {
     queryReadyLabel: "Consulta lista para ejecutar:"
   },
   en: {
-    title: "Natural Language to MongoDB",
-    subtitle: "Minimal MongoDB workspace with a visible review step before execution.",
+    title: "Text to NoSQL",
+    subtitle: "Natural Language → MongoDB Query Generator",
     sidebarDemosTitle: "Guided examples",
     sidebarSettingsTitle: "Current status",
     instructionTitle: "1. Describe what you want to do",
@@ -277,6 +281,10 @@ export const copyByLanguage: Record<Language, CopyDictionary> = {
       "Confirm the result and inspect the affected collection below."
     ],
     quickStartTip: "Tip: for the fastest path, load a guided example and then edit it in the main input.",
+    examplesTitle: "Quick examples",
+    advancedOptionsLabel: "Advanced options",
+    copyQueryButton: "Copy",
+    clearQueryButton: "Clear",
     selectedDemoTitle: "Selected example",
     selectedDemoHelper: "You can load it into the editor or run the full path to see the complete flow.",
     statusTitle: "Workflow status",
@@ -287,7 +295,7 @@ export const copyByLanguage: Record<Language, CopyDictionary> = {
     safeExecutionHint: "This action does not modify data. Review it and run it when ready.",
     destructiveExecutionHint: "This action changes data. Review the collection and filter before confirming.",
     initialMessage: 'Write an instruction. Example: show in transactions where category = "food"',
-    placeholder: 'eg: show active users or insert in transactions { "category": "food", "amount": 120 }',
+    placeholder: "Describe the query... Example: find users created today.",
     generateButton: "Generate query",
     generatingButton: "Generating query...",
     executeButton: "Run query",

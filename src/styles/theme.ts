@@ -1,22 +1,22 @@
 export const appTheme = {
   colors: {
-    background: "#f6f8fb",
-    backgroundGlow: "rgba(9, 105, 218, 0.08)",
-    backgroundGlowSecondary: "rgba(2, 6, 23, 0.04)",
+    background: "#ffffff",
+    backgroundGlow: "rgba(255, 255, 255, 0)",
+    backgroundGlowSecondary: "rgba(255, 255, 255, 0)",
     surface: "#ffffff",
-    surfaceStrong: "#f3f6fb",
+    surfaceStrong: "#f8fafc",
     panel: "#ffffff",
-    panelMuted: "#f6f8fb",
-    border: "#d0d7de",
-    borderStrong: "#8c959f",
-    textPrimary: "#1f2328",
-    textSecondary: "#59636e",
-    accent: "#0969da",
-    accentStrong: "#0550ae",
-    accentSoft: "rgba(9, 105, 218, 0.08)",
-    codeBackground: "#f6f8fa",
-    codeBorder: "#d8dee4",
-    codeText: "#1f2328",
+    panelMuted: "#f8fafc",
+    border: "#e5e7eb",
+    borderStrong: "#cbd5e1",
+    textPrimary: "#0f172a",
+    textSecondary: "#64748b",
+    accent: "#2563eb",
+    accentStrong: "#1d4ed8",
+    accentSoft: "rgba(37, 99, 235, 0.08)",
+    codeBackground: "#0f172a",
+    codeBorder: "#0f172a",
+    codeText: "#e2e8f0",
     success: "#1a7f37",
     warning: "#9a6700",
     danger: "#cf222e"
@@ -25,7 +25,7 @@ export const appTheme = {
     card: "16px",
     control: "12px"
   },
-  shadow: "0 12px 28px rgba(31, 35, 40, 0.08)"
+  shadow: "none"
 };
 
 export type AppTheme = typeof appTheme;

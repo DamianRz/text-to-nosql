@@ -2,17 +2,199 @@ import styled from "styled-components";
 
 export const Panel = styled.section`
   display: grid;
-  gap: 18px;
-  padding: 22px;
+  gap: 24px;
+`;
+
+export const ToolStack = styled.div`
+  display: grid;
+  gap: 24px;
+`;
+
+export const Card = styled.section`
+  display: grid;
+  gap: 16px;
+  padding: 24px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.card};
+  border-radius: 16px;
   background: ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadow};
 
   @media (max-width: 760px) {
-    gap: 14px;
-    padding: 16px;
+    padding: 18px;
   }
+`;
+
+export const HeroText = styled.div`
+  display: grid;
+  gap: 6px;
+`;
+
+export const HelperText = styled.p`
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+export const ExampleList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+export const ExampleChip = styled.button`
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.surfaceStrong};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.borderStrong};
+  }
+`;
+
+export const ResultFrame = styled.div`
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 10px;
+  background: ${({ theme }) => theme.colors.codeBackground};
+  color: ${({ theme }) => theme.colors.codeText};
+`;
+
+export const ResultToolbar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+export const ToolbarActions = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+`;
+
+export const GhostButton = styled.button`
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(226, 232, 240, 0.18);
+  border-radius: 8px;
+  background: transparent;
+  color: ${({ theme }) => theme.colors.codeText};
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(226, 232, 240, 0.08);
+  }
+`;
+
+export const AdvancedDetails = styled.details`
+  display: grid;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 16px;
+  background: ${({ theme }) => theme.colors.surface};
+`;
+
+export const AdvancedSummary = styled.summary`
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.textPrimary};
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+`;
+
+export const AdvancedContent = styled.div`
+  display: grid;
+  gap: 20px;
+  padding-top: 16px;
+`;
+
+export const FieldGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const FieldGroup = styled.label`
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+export const DemoGrid = styled.div`
+  display: grid;
+  gap: 10px;
+`;
+
+export const DemoRow = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 12px;
+  background: ${({ theme }) => theme.colors.surfaceStrong};
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const DemoText = styled.div`
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+`;
+
+export const SecondaryButton = styled.button`
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 10px;
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.colors.surfaceStrong};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export const CodeOutput = styled.pre`
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-size: 13px;
+  line-height: 1.65;
 `;
 
 export const PanelTitle = styled.h2`

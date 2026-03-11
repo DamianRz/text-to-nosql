@@ -1,21 +1,17 @@
 ## Objective
 
-Consolidate the current guided-workflow redesign, keep the Mongo query review step explicit, and leave the repository in a shippable state on this Android environment.
+Refactor the product into a cleaner developer tool UI: one primary input, one primary result surface, collapsed advanced options, and faster mobile usage.
 
 ## Plan
 
-1. Review the pending UI, copy, and test changes to confirm the intended product flow.
-2. Fix environment-specific gaps that block local validation, especially `next build` on Android.
-3. Validate the updated experience with tests and a production build.
-4. Commit the resulting state using the repository commit standard.
+1. Reduce the visible interface to header, input, result, and about copy.
+2. Move demos, model controls, preview toggles, logs, and database state into collapsed advanced options.
+3. Tighten spacing, typography, and color usage so the app reads like a utility, not a playground.
+4. Validate with tests and production build, then deploy through `main`.
 
 ## Execution Notes
 
-- Reviewed the pending diff and confirmed the main change is a clearer guided workflow: write, review, execute, and verify.
-- Verified the updated component tests for the redesigned workspace.
-- Added the Next.js WASM SWC fallback dependency required for Android builds.
-- Added a mobile-first follow-up plan:
-  - Move the workspace ahead of the sidebar on narrow screens.
-  - Keep controls easy to tap and fast to scan on phones.
-  - Add a visible quick-start block at the top of the workflow.
-  - Re-run validation and deploy through the GitHub Pages workflow.
+- Replaced the multi-panel visible layout with a single-column utility flow.
+- Collapsed secondary controls and demo tooling under `Advanced options`.
+- Kept the Android-safe Next.js WASM SWC fallback in place for local builds.
+- Pending final commit and deploy for this refactor.

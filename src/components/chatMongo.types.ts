@@ -107,6 +107,10 @@ export interface CopyDictionary {
   quickStartBody: string;
   quickStartSteps: string[];
   quickStartTip: string;
+  examplesTitle: string;
+  advancedOptionsLabel: string;
+  copyQueryButton: string;
+  clearQueryButton: string;
   selectedDemoTitle: string;
   selectedDemoHelper: string;
   statusTitle: string;

@@ -1,46 +1,110 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import type { ChatResolverMode, ChatResolverSource, ChatResponse, ExecuteResponse, LocalLlmModelsResponse, MongoOperation } from "@/types/mongo";
+import type { ChatResolverMode, ChatResponse, ExecuteResponse, LocalLlmModelsResponse, MongoOperation } from "@/types/mongo";
 import { copyByLanguage, demosByLanguage } from "./chatMongo.content";
 import {
+  AdvancedContent,
+  AdvancedDetails,
+  AdvancedSummary,
+  Card,
+  CodeOutput,
   Container,
+  DemoGrid,
+  DemoRow,
+  DemoText,
+  ExampleChip,
+  ExampleList,
+  FieldGrid,
+  FieldGroup,
+  GhostButton,
   Header,
   HeaderText,
+  HelperText,
   LanguageField,
   Page,
-  PreviewLabel,
-  PreviewPill,
-  PreviewPillGroup,
-  PreviewSwitch,
+  PanelTitle,
   ResultsColumn,
+  ResultFrame,
+  ResultToolbar,
+  SecondaryButton,
   Select,
   Subtitle,
   Title,
-  WorkspaceColumn
+  ToolbarActions,
+  ToolStack,
+  WorkspaceColumn,
+  Button,
+  DatabaseViewer,
+  DatabaseViewerLayout,
+  DatabaseSidebar,
+  DatabaseCollectionButton,
+  DatabaseCount,
+  DatabaseRecords,
+  DatabaseRecordItem,
+  DatabaseRecordList,
+  DatabaseRecordPre,
+  InfoText,
+  MutedText,
+  SectionHeader,
+  SectionLabel,
+  SummaryText,
+  Textarea,
+  ActionRow,
+  ErrorText
 } from "./chatMongo.styles";
-import { ChatMongoDatabaseViewer } from "./chatMongo/ChatMongoDatabaseViewer";
-import { ChatMongoSidebar } from "./chatMongo/ChatMongoSidebar";
-import { ChatMongoWorkspacePanel } from "./chatMongo/ChatMongoWorkspacePanel";
 import { executeLocalMongoOperation, initializeSimulatedMongoDb, readSimulatedMongoDb } from "@/client/localDb/simulatedMongoDb";
 import type { DatabaseCollectionView, DemoId, Language, Message, MessageRole } from "./chatMongo.types";
 
 const stringify = (value: unknown): string => JSON.stringify(value, null, 2);
 const DEFAULT_LOCAL_MODEL = "llama3.1:8b";
+
 const buildInitialMessages = (language: Language): Message[] => [
-  { id: `initial-${language}`, role: "assistant", text: copyByLanguage[language].initialMessage }
+  { id: `initial-${language}-0`, role: "assistant", text: copyByLanguage[language].initialMessage }
 ];
+
+const createMessageId = (prefix: string): string => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+
+  return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+};
+
+const quickExamples: Record<Language, string[]> = {
+  es: [
+    "find users registered this week",
+    "count orders from today",
+    "get products cheaper than 20"
+  ],
+  en: [
+    "find users registered this week",
+    "count orders from today",
+    "get products cheaper than 20"
+  ]
+};
+
+const getDisplayResult = (mongoShell: string, result: unknown): string => {
+  if (mongoShell) {
+    return mongoShell;
+  }
+
+  if (result != null) {
+    return stringify(result);
+  }
+
+  return "";
+};
 
 export function ChatMongo() {
   const messageSequenceRef = useRef(0);
-  const [language, setLanguage] = useState<Language>("es");
+  const [language, setLanguage] = useState<Language>("en");
   const [selectedDemoId, setSelectedDemoId] = useState<DemoId>("query");
-  const [input, setInput] = useState(demosByLanguage.es[0].text);
+  const [input, setInput] = useState("");
   const [operation, setOperation] = useState<MongoOperation | null>(null);
   const [mongoShell, setMongoShell] = useState("");
-  const [messages, setMessages] = useState<Message[]>(() => buildInitialMessages("es"));
+  const [messages, setMessages] = useState<Message[]>(() => buildInitialMessages("en"));
   const [result, setResult] = useState<unknown>(null);
-  const [resolver, setResolver] = useState<ChatResolverSource | null>(null);
   const [error, setError] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
@@ -51,17 +115,24 @@ export function ChatMongo() {
   const [isLoadingModels, setIsLoadingModels] = useState(false);
   const [modelLoadError, setModelLoadError] = useState("");
   const [localCollections, setLocalCollections] = useState<DatabaseCollectionView[]>([]);
+  const [selectedCollectionName, setSelectedCollectionName] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const copy = copyByLanguage[language];
   const demoCases = demosByLanguage[language];
   const selectedDemo = demoCases.find((entry) => entry.id === selectedDemoId) ?? demoCases[0];
   const resultView = useMemo(() => (result == null ? "" : stringify(result)), [result]);
+  const visibleOutput = getDisplayResult(mongoShell, result);
   const isBusy = isSending || isExecuting;
   const isInteractive = experienceMode === "local" && !isHostedRuntime;
+  const selectedCollection =
+    localCollections.find((collection) => collection.name === selectedCollectionName) ??
+    localCollections.find((collection) => collection.name === operation?.collection) ??
+    localCollections[0];
 
   const appendMessage = (role: MessageRole, text: string): void => {
     messageSequenceRef.current += 1;
-    setMessages((current) => [...current, { id: `${role}-${messageSequenceRef.current}-${Date.now()}`, role, text }]);
+    setMessages((current) => [...current, { id: createMessageId(`${role}-${messageSequenceRef.current}`), role, text }]);
   };
 
   const refreshLocalCollections = (): void => {
@@ -77,8 +148,8 @@ export function ChatMongo() {
     setOperation(null);
     setMongoShell("");
     setResult(null);
-    setResolver(null);
     setError("");
+    setCopied(false);
   };
 
   useEffect(() => {
@@ -94,7 +165,17 @@ export function ChatMongo() {
   useEffect(() => {
     initializeSimulatedMongoDb();
     refreshLocalCollections();
+  }, []);
 
+  useEffect(() => {
+    if (selectedCollectionName) {
+      return;
+    }
+
+    setSelectedCollectionName(operation?.collection ?? localCollections[0]?.name ?? "");
+  }, [localCollections, operation?.collection, selectedCollectionName]);
+
+  useEffect(() => {
     if (!isInteractive) {
       return;
     }
@@ -157,7 +238,7 @@ export function ChatMongo() {
     setError("");
     setOperation(null);
     setMongoShell("");
-    setResolver(null);
+    setCopied(false);
 
     if (options.appendUserMessage !== false) {
       appendMessage("user", trimmed);
@@ -184,7 +265,7 @@ export function ChatMongo() {
 
       setOperation(payload.operation);
       setMongoShell(payload.mongoShell);
-      setResolver(payload.resolver ?? "deterministic");
+      setSelectedCollectionName(payload.operation.collection);
       appendMessage("assistant", `${copy.queryReadyLabel}\n${payload.mongoShell}`);
       return payload.operation;
     } catch (requestError) {
@@ -207,6 +288,7 @@ export function ChatMongo() {
         setResult(localResult);
         appendMessage("assistant", stringify(localResult));
         refreshLocalCollections();
+        setSelectedCollectionName(operationToRun.collection);
         return;
       }
 
@@ -246,45 +328,45 @@ export function ChatMongo() {
     await requestOperation(input);
   };
 
-  const onExecute = async (): Promise<void> => {
-    if (!operation) {
+  const onCopyQuery = async (): Promise<void> => {
+    const value = visibleOutput;
+    if (!value) {
       return;
     }
 
-    await executeOperation(operation);
+    await navigator.clipboard.writeText(value);
+    setCopied(true);
   };
 
-  const onLoadDemo = (): void => {
-    if (!selectedDemo) {
+  const onRunDemo = async (demoId: DemoId): Promise<void> => {
+    const demo = demoCases.find((entry) => entry.id === demoId);
+    if (!demo) {
       return;
     }
 
-    setInput(selectedDemo.text);
-    clearOperationState();
-    appendMessage("assistant", copy.demoLoadedMessage);
-  };
+    setSelectedDemoId(demo.id);
+    setInput(demo.text);
 
-  const onRunDemo = async (): Promise<void> => {
-    if (!isInteractive || !selectedDemo) {
+    if (!isInteractive) {
       return;
     }
 
-    setInput(selectedDemo.text);
-    const operationFromDemo = await requestOperation(selectedDemo.text, { llmMode: selectedDemo.llmMode });
+    const operationFromDemo = await requestOperation(demo.text, { llmMode: demo.llmMode });
     if (operationFromDemo) {
       await executeOperation(operationFromDemo);
     }
   };
 
-  const onSelectDemo = (demoId: DemoId): void => {
-    setSelectedDemoId(demoId);
-    const nextDemo = demoCases.find((entry) => entry.id === demoId);
-    if (!nextDemo) {
+  const onLoadDemo = (demoId: DemoId): void => {
+    const demo = demoCases.find((entry) => entry.id === demoId);
+    if (!demo) {
       return;
     }
 
-    setInput(nextDemo.text);
+    setSelectedDemoId(demo.id);
+    setInput(demo.text);
     clearOperationState();
+    appendMessage("assistant", copy.demoLoadedMessage);
   };
 
   const onLanguageChange = (nextLanguage: Language): void => {
@@ -292,97 +374,238 @@ export function ChatMongo() {
     setLanguage(nextLanguage);
     setSelectedDemoId("query");
     setMessages(buildInitialMessages(nextLanguage));
-    setInput(demosByLanguage[nextLanguage][0].text);
+    setInput("");
     clearOperationState();
   };
+
+  const latestLogs = messages.slice(-4).reverse();
 
   return (
     <Page>
       <Container>
-        <ChatMongoSidebar
-          copy={copy}
-          demos={demoCases}
-          selectedDemoId={selectedDemoId}
-          language={language}
-          experienceMode={experienceMode}
-          selectedModel={selectedModel}
-          onSelectDemo={onSelectDemo}
-          onLoadDemo={onLoadDemo}
-          onRunDemo={onRunDemo}
-          isBusy={isBusy}
-          isInteractive={isInteractive}
-        />
-
         <Header>
           <HeaderText>
             <Title>{copy.title}</Title>
             <Subtitle>{copy.subtitle}</Subtitle>
-            {modelLoadError ? <Subtitle>{`${copy.localModelsError} ${modelLoadError}`}</Subtitle> : null}
           </HeaderText>
-          <PreviewSwitch>
-            <LanguageField>
-              {copy.localModelLabel}
-              <Select
-                aria-label="local-model-select"
-                value={selectedModel}
-                onChange={(event) => setSelectedModel(event.target.value)}
-                disabled={!isInteractive || isLoadingModels}
-              >
-                {availableModels.map((model) => (
-                  <option key={model} value={model}>
-                    {model}
-                  </option>
-                ))}
-              </Select>
-            </LanguageField>
-            <div>
-              <PreviewLabel>{copy.previewModeLabel}</PreviewLabel>
-              <PreviewPillGroup aria-label="preview-mode-switch">
-                <PreviewPill type="button" $active={experienceMode === "local"} onClick={() => setExperienceMode("local")}>
-                  {copy.previewLocalLabel}
-                </PreviewPill>
-                <PreviewPill type="button" $active={experienceMode === "hosted"} onClick={() => setExperienceMode("hosted")}>
-                  {copy.previewHostedLabel}
-                </PreviewPill>
-              </PreviewPillGroup>
-            </div>
-            <LanguageField>
-              {copy.languageLabel}
-              <Select value={language} onChange={(event) => onLanguageChange(event.target.value as Language)} aria-label="language-select">
-                <option value="es">{copy.languageSpanish}</option>
-                <option value="en">{copy.languageEnglish}</option>
-              </Select>
-            </LanguageField>
-          </PreviewSwitch>
         </Header>
 
         <WorkspaceColumn>
-          <ChatMongoWorkspacePanel
-            copy={copy}
-            language={language}
-            input={input}
-            mongoShell={mongoShell}
-            resultView={resultView}
-            error={error}
-            operation={operation}
-            resolver={resolver}
-            isSending={isSending}
-            isExecuting={isExecuting}
-            isInteractive={isInteractive}
-            messages={messages}
-            selectedDemo={selectedDemo}
-            onInputChange={setInput}
-            onGenerate={onGenerate}
-            onExecute={onExecute}
-          />
+          <ToolStack>
+            <Card>
+              <SectionHeader>
+                <div>
+                  <SectionLabel>{copy.quickStartTitle}</SectionLabel>
+                  <PanelTitle>{copy.workspaceDescription}</PanelTitle>
+                </div>
+              </SectionHeader>
+              <HelperText>{copy.quickStartBody}</HelperText>
+              <ExampleList aria-label="quick-start-instructions">
+                {copy.quickStartSteps.map((step) => (
+                  <ExampleChip key={step} as="span">
+                    {step}
+                  </ExampleChip>
+                ))}
+              </ExampleList>
+              <HelperText>{copy.quickStartTip}</HelperText>
+            </Card>
+
+            <Card>
+              <div>
+                <SectionLabel>{copy.instructionTitle}</SectionLabel>
+                <PanelTitle>{copy.chatTitle}</PanelTitle>
+              </div>
+              <HelperText>{copy.instructionHelper}</HelperText>
+              <div>
+                <MutedText>{copy.examplesTitle}</MutedText>
+                <ExampleList>
+                  {quickExamples[language].map((example) => (
+                    <ExampleChip key={example} type="button" onClick={() => setInput(example)}>
+                      {example}
+                    </ExampleChip>
+                  ))}
+                </ExampleList>
+              </div>
+              <form onSubmit={onGenerate}>
+                <Textarea
+                  aria-label="chat-input"
+                  placeholder={copy.placeholder}
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  disabled={!isInteractive}
+                />
+                <ActionRow>
+                  <Button type="submit" disabled={!isInteractive || isSending}>
+                    {isSending ? copy.generatingButton : copy.generateButton}
+                  </Button>
+                  {operation ? (
+                    <SecondaryButton type="button" onClick={() => void executeOperation(operation)} disabled={isExecuting || !isInteractive}>
+                      {isExecuting ? copy.executingButton : copy.executeButton}
+                    </SecondaryButton>
+                  ) : null}
+                </ActionRow>
+              </form>
+              {error ? <ErrorText role="alert">{error}</ErrorText> : null}
+            </Card>
+
+            <Card>
+              <SectionHeader>
+                <div>
+                  <SectionLabel>{copy.generatedQueryTitle}</SectionLabel>
+                  <PanelTitle>Result</PanelTitle>
+                </div>
+              </SectionHeader>
+              <ResultFrame>
+                <ResultToolbar>
+                  <MutedText>{operation ? `${operation.action} · ${operation.collection}` : copy.noGeneratedQuery}</MutedText>
+                  <ToolbarActions>
+                    <GhostButton type="button" onClick={() => void onCopyQuery()} disabled={!visibleOutput}>
+                      {copied ? "Copied" : copy.copyQueryButton}
+                    </GhostButton>
+                    <GhostButton type="button" onClick={clearOperationState} disabled={!visibleOutput && !resultView}>
+                      {copy.clearQueryButton}
+                    </GhostButton>
+                  </ToolbarActions>
+                </ResultToolbar>
+                <CodeOutput aria-label="generated-query">{visibleOutput || copy.noGeneratedQuery}</CodeOutput>
+              </ResultFrame>
+              <div>
+                <SectionLabel>{copy.resultTitle}</SectionLabel>
+                <ResultFrame>
+                  <CodeOutput aria-label="execution-result">{resultView || copy.noResult}</CodeOutput>
+                </ResultFrame>
+              </div>
+            </Card>
+
+            <AdvancedDetails>
+              <AdvancedSummary>{copy.advancedOptionsLabel}</AdvancedSummary>
+              <AdvancedContent>
+                <FieldGrid>
+                  <FieldGroup>
+                    {copy.languageLabel}
+                    <Select aria-label="language-select" value={language} onChange={(event) => onLanguageChange(event.target.value as Language)}>
+                      <option value="es">{copy.languageSpanish}</option>
+                      <option value="en">{copy.languageEnglish}</option>
+                    </Select>
+                  </FieldGroup>
+
+                  <FieldGroup>
+                    {copy.previewModeLabel}
+                    <Select
+                      aria-label="preview-mode-select"
+                      value={experienceMode}
+                      onChange={(event) => setExperienceMode(event.target.value as "hosted" | "local")}
+                    >
+                      <option value="local">{copy.previewLocalLabel}</option>
+                      <option value="hosted">{copy.previewHostedLabel}</option>
+                    </Select>
+                  </FieldGroup>
+
+                  <FieldGroup>
+                    {copy.localModelLabel}
+                    <Select
+                      aria-label="local-model-select"
+                      value={selectedModel}
+                      onChange={(event) => setSelectedModel(event.target.value)}
+                      disabled={!isInteractive || isLoadingModels}
+                    >
+                      {availableModels.map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
+                    </Select>
+                  </FieldGroup>
+                </FieldGrid>
+
+                {modelLoadError ? <HelperText>{`${copy.localModelsError} ${modelLoadError}`}</HelperText> : null}
+                {!isInteractive ? <HelperText>{copy.hostedWorkspaceNotice}</HelperText> : null}
+
+                <div>
+                  <SectionLabel>{copy.sidebarDemosTitle}</SectionLabel>
+                  <DemoGrid>
+                    {demoCases.slice(0, 6).map((demo) => (
+                      <DemoRow key={demo.id}>
+                        <DemoText>
+                          <strong>{demo.label}</strong>
+                          <MutedText>{demo.text}</MutedText>
+                        </DemoText>
+                        <SecondaryButton type="button" onClick={() => onLoadDemo(demo.id)}>
+                          {copy.demoLoadButton}
+                        </SecondaryButton>
+                        <Button type="button" onClick={() => void onRunDemo(demo.id)} disabled={isBusy || !isInteractive}>
+                          {copy.demoRunButton}
+                        </Button>
+                      </DemoRow>
+                    ))}
+                  </DemoGrid>
+                </div>
+
+                <DatabaseViewer aria-label="local-database-viewer">
+                  <SectionHeader>
+                    <div>
+                      <SectionLabel>{copy.databaseViewerTitle}</SectionLabel>
+                      <PanelTitle>{copy.databaseViewerOutcomeTitle}</PanelTitle>
+                    </div>
+                  </SectionHeader>
+                  <DatabaseViewerLayout>
+                    <DatabaseSidebar>
+                      {localCollections.map((collection) => (
+                        <DatabaseCollectionButton
+                          key={collection.name}
+                          type="button"
+                          $active={collection.name === selectedCollection?.name}
+                          onClick={() => setSelectedCollectionName(collection.name)}
+                        >
+                          <span>{collection.name}</span>
+                          <DatabaseCount>{collection.documents.length}</DatabaseCount>
+                        </DatabaseCollectionButton>
+                      ))}
+                    </DatabaseSidebar>
+                    <DatabaseRecords>
+                      <SectionLabel>{selectedCollection ? `${copy.databaseRecordsTitle}: ${selectedCollection.name}` : copy.databaseRecordsTitle}</SectionLabel>
+                      {!selectedCollection || selectedCollection.documents.length === 0 ? (
+                        <InfoText>{copy.databaseEmptyCollection}</InfoText>
+                      ) : (
+                        <DatabaseRecordList>
+                          {selectedCollection.documents.map((document, index) => (
+                            <DatabaseRecordItem key={String(document._id ?? index)}>
+                              <DatabaseRecordPre>{stringify(document)}</DatabaseRecordPre>
+                            </DatabaseRecordItem>
+                          ))}
+                        </DatabaseRecordList>
+                      )}
+                    </DatabaseRecords>
+                  </DatabaseViewerLayout>
+                </DatabaseViewer>
+
+                <Card>
+                  <SectionLabel>{copy.logsTitle}</SectionLabel>
+                  {latestLogs.length === 0 ? (
+                    <InfoText>{copy.historyEmpty}</InfoText>
+                  ) : (
+                    latestLogs.map((message) => (
+                      <div key={message.id}>
+                        <MutedText>{message.role}</MutedText>
+                        <CodeOutput>{message.text}</CodeOutput>
+                      </div>
+                    ))
+                  )}
+                </Card>
+              </AdvancedContent>
+            </AdvancedDetails>
+          </ToolStack>
         </WorkspaceColumn>
 
         <ResultsColumn>
-          <ChatMongoDatabaseViewer
-            copy={copy}
-            collections={localCollections}
-            preferredCollectionName={operation?.collection ?? selectedDemo.operation.collection}
-          />
+          <Card>
+            <SectionLabel>{copy.aboutTitle}</SectionLabel>
+            <PanelTitle>About this project</PanelTitle>
+            <SummaryText>
+              Text to NoSQL converts natural language into MongoDB queries using a local LLM pipeline. Built to explore
+              AI-assisted database querying and developer tooling.
+            </SummaryText>
+          </Card>
         </ResultsColumn>
       </Container>
     </Page>
