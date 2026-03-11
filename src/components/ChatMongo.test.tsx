@@ -1,8 +1,7 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ThemeProvider } from "styled-components";
+import { AppThemeProvider } from "./AppThemeProvider";
 import { ChatMongo } from "./ChatMongo";
-import { appTheme } from "@/styles/theme";
 
 const mockedFetch = jest.fn();
 const localModelsResponse = {
@@ -13,9 +12,9 @@ const localModelsResponse = {
 
 const renderChatMongo = () =>
   render(
-    <ThemeProvider theme={appTheme}>
+    <AppThemeProvider>
       <ChatMongo />
-    </ThemeProvider>
+    </AppThemeProvider>
   );
 
 const waitForInitialLoad = async () => {
@@ -31,7 +30,7 @@ describe("ChatMongo", () => {
     window.sessionStorage.clear();
   });
 
-  test("renders a minimal utility layout first", async () => {
+  test("renders a compact tool-first layout", async () => {
     mockedFetch.mockResolvedValueOnce({
       json: async () => localModelsResponse
     });
@@ -43,8 +42,8 @@ describe("ChatMongo", () => {
     expect(screen.getByText("Natural Language → MongoDB Query Generator")).toBeInTheDocument();
     expect(screen.getByLabelText("chat-input")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generate query" })).toBeInTheDocument();
-    expect(screen.getByText("Advanced options")).toBeInTheDocument();
-    expect(screen.getByText("About this project")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Run query" })).toBeInTheDocument();
+    expect(screen.getByText("Local simulated database")).toBeInTheDocument();
   });
 
   test("generates a query and executes it in two explicit steps", async () => {
@@ -68,23 +67,24 @@ describe("ChatMongo", () => {
     const user = userEvent.setup();
     await waitForInitialLoad();
 
-    await user.type(screen.getByLabelText("chat-input"), "contar en transactions donde category = comida");
+    await user.type(screen.getByRole("textbox", { name: "1. Describe what you want to do" }), "contar en transactions donde category = comida");
     await user.click(screen.getByRole("button", { name: "Generate query" }));
 
     await waitFor(() => {
-      expect(screen.getByLabelText("generated-query")).toHaveTextContent("countDocuments");
+      expect(screen.getByText("count · transactions")).toBeInTheDocument();
+      expect(screen.getAllByText(/countDocuments/).length).toBeGreaterThan(0);
     });
 
     await user.click(screen.getByRole("button", { name: "Run query" }));
 
     await waitFor(() => {
-      expect(screen.getByLabelText("execution-result")).toHaveTextContent('"total": 1');
+      expect(screen.getAllByText(/"total": 1/).length).toBeGreaterThan(0);
     });
 
     expect(mockedFetch).toHaveBeenCalledTimes(2);
   }, 15000);
 
-  test("allows switching language inside advanced options", async () => {
+  test("allows switching language from the header controls", async () => {
     mockedFetch.mockResolvedValueOnce({
       json: async () => localModelsResponse
     });
@@ -92,14 +92,14 @@ describe("ChatMongo", () => {
     renderChatMongo();
     const user = userEvent.setup();
     await waitForInitialLoad();
-    await user.click(screen.getByText("Advanced options"));
-    await user.selectOptions(screen.getByLabelText("language-select"), "es");
+    fireEvent.mouseDown(screen.getByRole("combobox", { name: "Language" }));
+    await user.click(screen.getByRole("option", { name: "Spanish" }));
 
     expect(screen.getByText("Inicio rapido")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generar consulta" })).toBeInTheDocument();
   });
 
-  test("loads a demo into the editor from advanced options", async () => {
+  test("switches to hosted preview and renders demo-first content", async () => {
     mockedFetch.mockResolvedValueOnce({
       json: async () => localModelsResponse
     });
@@ -107,42 +107,15 @@ describe("ChatMongo", () => {
     renderChatMongo();
     const user = userEvent.setup();
     await waitForInitialLoad();
-    await user.click(screen.getByText("Advanced options"));
-    await user.click(screen.getAllByRole("button", { name: "Load into editor" })[0]);
 
-    expect(screen.getByLabelText("chat-input")).not.toHaveValue("");
+    fireEvent.mouseDown(screen.getByRole("combobox", { name: "View" }));
+    await user.click(screen.getByRole("option", { name: "Hosted" }));
+
+    expect(screen.getByText("Hosted preview")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Run demo" })).toBeInTheDocument();
   });
 
-  test("runs a demo from advanced options", async () => {
-    mockedFetch
-      .mockResolvedValueOnce({
-        json: async () => localModelsResponse
-      })
-      .mockResolvedValueOnce({
-        json: async () => ({
-          ok: true,
-          operation: {
-            action: "deleteMany",
-            collection: "users",
-            filter: { active: false }
-          },
-          mongoShell: 'db.users.deleteMany({"active":false})'
-        })
-      });
-
-    renderChatMongo();
-    const user = userEvent.setup();
-    await waitForInitialLoad();
-    await user.click(screen.getByText("Advanced options"));
-    await user.click(screen.getAllByRole("button", { name: "Run demo" })[0]);
-
-    await waitFor(() => {
-      expect(screen.getByLabelText("generated-query")).toHaveTextContent("db.");
-      expect(screen.getByLabelText("execution-result")).not.toHaveTextContent("No results yet.");
-    });
-  }, 15000);
-
-  test("shows hosted notice when preview mode changes", async () => {
+  test("renders hosted demos without calling chat endpoints", async () => {
     mockedFetch.mockResolvedValueOnce({
       json: async () => localModelsResponse
     });
@@ -150,9 +123,12 @@ describe("ChatMongo", () => {
     renderChatMongo();
     const user = userEvent.setup();
     await waitForInitialLoad();
-    await user.click(screen.getByText("Advanced options"));
-    await user.selectOptions(screen.getByLabelText("preview-mode-select"), "hosted");
 
-    expect(screen.getByText(/run the project locally/i)).toBeInTheDocument();
+    fireEvent.mouseDown(screen.getByRole("combobox", { name: "View" }));
+    await user.click(screen.getByRole("option", { name: "Hosted" }));
+    await user.click(screen.getByRole("button", { name: "Run demo" }));
+
+    expect(screen.getByText(/db\./)).toBeInTheDocument();
+    expect(mockedFetch).toHaveBeenCalledTimes(1);
   });
 });
