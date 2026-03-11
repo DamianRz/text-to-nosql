@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { AppThemeProvider } from "@/components/AppThemeProvider";
 import StyledComponentsRegistry from "@/lib/StyledComponentsRegistry";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 
-const inter = Inter({
+const roboto = Roboto({
   subsets: ["latin"],
-  variable: "--font-ui"
+  variable: "--font-ui",
+  weight: ["400", "500", "700"]
 });
 
-const jetBrainsMono = JetBrains_Mono({
+const robotoMono = Roboto_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   weight: ["400", "500"]
@@ -36,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} ${jetBrainsMono.variable}`}>
+      <body className={`${roboto.variable} ${robotoMono.variable}`}>
         <StyledComponentsRegistry>
           <AppThemeProvider>{children}</AppThemeProvider>
         </StyledComponentsRegistry>

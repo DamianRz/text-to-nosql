@@ -11,12 +11,9 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     margin: 0;
-    font-family: var(--font-ui), -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-family: var(--font-ui), "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     min-height: 100vh;
-    background:
-      radial-gradient(circle at top left, ${({ theme }) => theme.colors.backgroundGlow}, transparent 32%),
-      radial-gradient(circle at top right, ${({ theme }) => theme.colors.backgroundGlowSecondary}, transparent 26%),
-      linear-gradient(180deg, #09121f 0%, ${({ theme }) => theme.colors.background} 58%, #050b14 100%);
+    background: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.textPrimary};
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -33,16 +30,16 @@ const GlobalStyle = createGlobalStyle`
 
   *::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.colors.borderStrong};
-    border-radius: 999px;
+    border-radius: 8px;
   }
 
   *::-webkit-scrollbar-track {
-    background: rgba(5, 12, 24, 0.9);
+    background: ${({ theme }) => theme.colors.surfaceStrong};
   }
 
   pre,
   code {
-    font-family: var(--font-mono), "IBM Plex Mono", monospace;
+    font-family: var(--font-mono), "Roboto Mono", monospace;
   }
 `;
 

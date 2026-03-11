@@ -15,8 +15,9 @@ export const Card = styled.section`
   gap: 16px;
   padding: 24px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 16px;
+  border-radius: ${({ theme }) => theme.radius.card};
   background: ${({ theme }) => theme.colors.surface};
+  box-shadow: ${({ theme }) => theme.shadow};
 
   @media (max-width: 760px) {
     padding: 18px;
@@ -31,7 +32,7 @@ export const HeroText = styled.div`
 export const HelperText = styled.p`
   margin: 0;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
@@ -42,17 +43,18 @@ export const ExampleList = styled.div`
 `;
 
 export const ExampleChip = styled.button`
-  min-height: 32px;
-  padding: 0 12px;
+  min-height: 36px;
+  padding: 0 14px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 999px;
   background: ${({ theme }) => theme.colors.surfaceStrong};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
 
   &:hover {
+    background: ${({ theme }) => theme.colors.panelMuted};
     border-color: ${({ theme }) => theme.colors.borderStrong};
   }
 `;
@@ -61,7 +63,8 @@ export const ResultFrame = styled.div`
   display: grid;
   gap: 12px;
   padding: 16px;
-  border-radius: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.codeBorder};
+  border-radius: 12px;
   background: ${({ theme }) => theme.colors.codeBackground};
   color: ${({ theme }) => theme.colors.codeText};
 `;
@@ -81,14 +84,14 @@ export const ToolbarActions = styled.div`
 `;
 
 export const GhostButton = styled.button`
-  min-height: 30px;
-  padding: 0 10px;
+  min-height: 32px;
+  padding: 0 12px;
   border: 1px solid rgba(226, 232, 240, 0.18);
   border-radius: 8px;
   background: transparent;
   color: ${({ theme }) => theme.colors.codeText};
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover {
@@ -101,15 +104,16 @@ export const AdvancedDetails = styled.details`
   gap: 16px;
   padding: 18px 20px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 16px;
+  border-radius: ${({ theme }) => theme.radius.card};
   background: ${({ theme }) => theme.colors.surface};
+  box-shadow: ${({ theme }) => theme.shadow};
 `;
 
 export const AdvancedSummary = styled.summary`
   cursor: pointer;
   list-style: none;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.textPrimary};
 
   &::-webkit-details-marker {
@@ -168,14 +172,14 @@ export const DemoText = styled.div`
 `;
 
 export const SecondaryButton = styled.button`
-  min-height: 36px;
+  min-height: 40px;
   padding: 0 14px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
+  border-radius: 20px;
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover:not(:disabled) {
@@ -192,16 +196,16 @@ export const CodeOutput = styled.pre`
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-family: var(--font-mono), "Roboto Mono", monospace;
   font-size: 13px;
   line-height: 1.65;
 `;
 
 export const PanelTitle = styled.h2`
   margin: 0;
-  font-size: 22px;
-  line-height: 1.2;
-  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
@@ -214,7 +218,7 @@ export const InfoText = styled.p`
 
 export const MutedText = styled.span`
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.33;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
@@ -294,9 +298,9 @@ export const TagRow = styled.div`
 `;
 
 export const SectionLabel = styled.span`
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
@@ -427,24 +431,24 @@ export const Form = styled.form`
 
 export const Textarea = styled.textarea`
   width: 100%;
-  min-height: 156px;
+  min-height: 120px;
   padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 12px;
+  border-radius: 10px;
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.textPrimary};
   resize: vertical;
-  font-family: var(--font-ui), "Inter", sans-serif;
+  font-family: var(--font-ui), "Roboto", sans-serif;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textSecondary};
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.accent};
-    outline-offset: 1px;
+    outline: 2px solid ${({ theme }) => theme.colors.accentSoft};
+    border-color: ${({ theme }) => theme.colors.accent};
   }
 `;
 
@@ -462,8 +466,8 @@ export const ActionRow = styled.div`
 
 export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghost" | "danger" }>`
   min-height: 40px;
-  padding: 0 16px;
-  border-radius: 10px;
+  padding: 0 20px;
+  border-radius: 20px;
   border: 1px solid
     ${({ $variant, theme }) => {
       if ($variant === "secondary") {
@@ -496,9 +500,10 @@ export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghos
     return theme.colors.accent;
   }};
   color: ${({ $variant, theme }) => (($variant === "primary" || $variant === "danger") ? "#ffffff" : theme.colors.textPrimary)};
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  box-shadow: ${({ theme, $variant }) => ($variant === "primary" || !$variant ? theme.shadow : "none")};
   transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 
   &:hover:not(:disabled) {
@@ -512,7 +517,7 @@ export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghos
       }
 
       if ($variant === "danger") {
-        return "#b62324";
+        return "#8c1d18";
       }
 
       return theme.colors.accentStrong;
@@ -525,8 +530,7 @@ export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghos
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.accent};
-    outline-offset: 2px;
+    outline: 2px solid ${({ theme }) => theme.colors.accentSoft};
   }
 
   @media (max-width: 760px) {
@@ -573,20 +577,20 @@ export const CodeTokenPlain = styled.span`
 `;
 
 export const CodeTokenMethod = styled.span`
-  color: ${({ theme }) => theme.colors.accentStrong};
+  color: #c4b5fd;
   font-weight: 600;
 `;
 
 export const CodeTokenKey = styled.span`
-  color: #8250df;
+  color: #93c5fd;
 `;
 
 export const CodeTokenString = styled.span`
-  color: #0a7b83;
+  color: #86efac;
 `;
 
 export const CodeTokenNumber = styled.span`
-  color: #9a6700;
+  color: #fdba74;
 `;
 
 export const LogList = styled.div`
@@ -664,14 +668,14 @@ export const DatabaseCollectionButton = styled.button<{ $active: boolean }>`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 42px;
+  min-height: 40px;
   padding: 0 12px;
   border: 1px solid ${({ $active, theme }) => ($active ? theme.colors.accent : theme.colors.border)};
-  border-radius: 10px;
+  border-radius: 8px;
   background: ${({ $active, theme }) => ($active ? theme.colors.accentSoft : theme.colors.panelMuted)};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   text-align: left;
 
@@ -725,7 +729,7 @@ export const DatabaseRecordPre = styled.pre`
   color: ${({ theme }) => theme.colors.codeText};
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-family: var(--font-mono), "Roboto Mono", monospace;
   font-size: 12px;
   line-height: 1.6;
 `;

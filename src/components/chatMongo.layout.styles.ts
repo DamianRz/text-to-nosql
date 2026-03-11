@@ -5,7 +5,7 @@ export const Page = styled.main`
   padding: 40px 16px 64px;
   background: ${({ theme }) => theme.colors.background};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-family: var(--font-ui), "Inter", sans-serif;
+  font-family: var(--font-ui), "Roboto", sans-serif;
 
   @media (max-width: 760px) {
     padding: 24px 16px 48px;
@@ -136,12 +136,12 @@ export const SidebarMetaItem = styled.div`
 
 export const Header = styled.header`
   display: grid;
-  gap: 6px;
+  gap: 8px;
 `;
 
 export const HeaderText = styled.div`
   display: grid;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
 `;
 
@@ -149,15 +149,15 @@ export const Title = styled.h2`
   margin: 0;
   font-size: 24px;
   line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  letter-spacing: 0;
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 export const Subtitle = styled.p`
   margin: 0;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.43;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
@@ -231,14 +231,14 @@ export const LanguageField = styled.label`
 
 export const Select = styled.select`
   min-width: 176px;
-  height: 38px;
-  padding: 0 12px;
+  height: 40px;
+  padding: 0 14px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
+  border-radius: 8px;
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-size: 13px;
-  font-family: var(--font-ui), "Inter", sans-serif;
+  font-size: 14px;
+  font-family: var(--font-ui), "Roboto", sans-serif;
 
   @media (max-width: 760px) {
     width: 100%;
@@ -246,8 +246,8 @@ export const Select = styled.select`
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.accent};
-    outline-offset: 1px;
+    outline: 2px solid ${({ theme }) => theme.colors.accentSoft};
+    border-color: ${({ theme }) => theme.colors.accent};
   }
 `;
 
