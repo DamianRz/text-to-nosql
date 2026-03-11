@@ -112,7 +112,8 @@ describe("ChatMongo", () => {
     await user.click(screen.getByRole("option", { name: "Hosted" }));
 
     expect(screen.getByText("Hosted preview")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Run demo" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Run demo" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Copy" })).not.toBeInTheDocument();
   });
 
   test("renders hosted demos without calling chat endpoints", async () => {
@@ -126,7 +127,7 @@ describe("ChatMongo", () => {
 
     fireEvent.mouseDown(screen.getByRole("combobox", { name: "View" }));
     await user.click(screen.getByRole("option", { name: "Hosted" }));
-    await user.click(screen.getByRole("button", { name: "Run demo" }));
+    await user.click(screen.getByRole("tab", { name: "Count" }));
 
     expect(screen.getByText(/db\./)).toBeInTheDocument();
     expect(mockedFetch).toHaveBeenCalledTimes(1);

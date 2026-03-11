@@ -8,11 +8,21 @@ export function PageFrame({ children }: PropsWithChildren) {
     <Box
       sx={{
         minHeight: "100vh",
+        position: "relative",
+        overflow: "hidden",
         px: { xs: 2, md: 4 },
-        py: { xs: 2, md: 4 }
+        py: { xs: 2, md: 4 },
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background:
+            "radial-gradient(circle at 12% 0%, rgba(31, 94, 255, 0.08), transparent 28%), radial-gradient(circle at 88% 12%, rgba(19, 34, 56, 0.06), transparent 24%)"
+        }
       }}
     >
-      <Box sx={{ width: "min(1180px, 100%)", mx: "auto" }}>{children}</Box>
+      <Box sx={{ width: "min(1180px, 100%)", mx: "auto", position: "relative", zIndex: 1 }}>{children}</Box>
     </Box>
   );
 }
@@ -37,10 +47,26 @@ export function SurfaceCard({
         p: compact ? 2.25 : { xs: 2.25, md: 3 },
         borderRadius: "8px",
         height: "100%",
+        position: "relative",
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        boxShadow: "0 4px 12px rgba(15, 23, 42, 0.04)"
+        boxShadow: "0 4px 12px rgba(15, 23, 42, 0.04)",
+        backdropFilter: "blur(10px)",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.99) 100%)",
+        transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          inset: "0 0 auto 0",
+          height: 2,
+          background: "linear-gradient(90deg, rgba(31,94,255,0.5), rgba(31,94,255,0))"
+        },
+        "&:hover": {
+          transform: "translateY(-1px)",
+          boxShadow: "0 10px 24px rgba(15, 23, 42, 0.06)",
+          borderColor: "#cfd9e6"
+        }
       }}
     >
       <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={2}>
@@ -104,7 +130,8 @@ export function CodePanel({
         borderRadius: "8px",
         overflow: "hidden",
         bgcolor: "#0f172a",
-        borderColor: "#0f172a"
+        borderColor: "#0f172a",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 18px rgba(15, 23, 42, 0.12)"
       }}
     >
       <Stack

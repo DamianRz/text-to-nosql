@@ -403,7 +403,7 @@ export function ChatMongo() {
   );
 
   const renderHostedView = () => (
-      <Grid container spacing={2.5} sx={{ alignItems: "stretch" }}>
+    <Grid container spacing={2.5} sx={{ alignItems: "stretch" }}>
       <Grid size={{ xs: 12, md: 4 }}>
         <SurfaceCard
           eyebrow={copy.aboutTitle}
@@ -448,14 +448,6 @@ export function ChatMongo() {
             minRows={4}
             InputProps={{ readOnly: true }}
           />
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.25}>
-            <ActionButton variant="contained" onClick={() => applyDemoPreview(selectedDemo)}>
-              {copy.demoRunButton}
-            </ActionButton>
-            <ActionButton variant="outlined" onClick={() => void onCopyQuery()} disabled={!visibleOutput}>
-              {copied ? "Copied" : copy.copyQueryButton}
-            </ActionButton>
-          </Stack>
           <Typography variant="body2" color="text.secondary">
             {copy.reviewHelper}
           </Typography>
