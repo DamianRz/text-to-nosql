@@ -3,8 +3,10 @@ import { createChatResponse } from "./createChatResponse";
 import { closeMongoConnection, getMongoDb } from "@/server/mongo/client";
 import { executeMongoOperation } from "@/server/mongo/executeMongoOperation";
 
-describe("chat flow e2e-like", () => {
-  let mongoServer: MongoMemoryServer;
+const describeWithMongoMemoryServer = process.platform === "android" ? describe.skip : describe;
+
+describeWithMongoMemoryServer("chat flow e2e-like", () => {
+  let mongoServer: MongoMemoryServer | null = null;
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
@@ -24,7 +26,7 @@ describe("chat flow e2e-like", () => {
 
   afterAll(async () => {
     await closeMongoConnection();
-    await mongoServer.stop();
+    await mongoServer?.stop();
   });
 
   test("natural text -> operation -> result", async () => {

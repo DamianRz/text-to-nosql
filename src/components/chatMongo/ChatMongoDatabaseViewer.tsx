@@ -56,17 +56,18 @@ export function ChatMongoDatabaseViewer({ copy, collections, preferredCollection
     <DatabaseViewer aria-label="local-database-viewer">
       <SectionHeader>
         <div>
-          <PanelTitle>{copy.databaseViewerTitle}</PanelTitle>
-          <MutedText>{copy.databaseViewerDescription}</MutedText>
+          <PanelTitle>{copy.databaseViewerOutcomeTitle}</PanelTitle>
+          <MutedText>{copy.databaseViewerOutcomeDescription}</MutedText>
         </div>
       </SectionHeader>
 
       <DatabaseViewerLayout>
         <DatabaseSidebar>
           <SectionHeader>
-            <SectionLabel>{copy.databaseCollectionsTitle}</SectionLabel>
+            <SectionLabel>{copy.databaseViewerTitle}</SectionLabel>
             <MutedText>{collections.length}</MutedText>
           </SectionHeader>
+          <InfoText>{copy.databaseViewerDescription}</InfoText>
           {collections.length === 0 ? (
             <InfoText>{copy.databaseEmptyState}</InfoText>
           ) : (

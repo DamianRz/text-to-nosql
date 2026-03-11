@@ -1,31 +1,31 @@
 export const appTheme = {
   colors: {
-    background: "#020617",
-    backgroundGlow: "rgba(59, 130, 246, 0.12)",
-    backgroundGlowSecondary: "rgba(15, 23, 42, 0.42)",
-    surface: "#0f172a",
-    surfaceStrong: "#111c33",
-    panel: "#0f172a",
-    panelMuted: "#111827",
-    border: "#1e293b",
-    borderStrong: "#334155",
-    textPrimary: "#e6edf3",
-    textSecondary: "#9ca3af",
-    accent: "#3b82f6",
-    accentStrong: "#2563eb",
-    accentSoft: "rgba(59, 130, 246, 0.14)",
-    codeBackground: "#020617",
-    codeBorder: "#1e293b",
-    codeText: "#e6edf3",
-    success: "#22c55e",
-    warning: "#f59e0b",
-    danger: "#ef4444"
+    background: "#f6f8fb",
+    backgroundGlow: "rgba(9, 105, 218, 0.08)",
+    backgroundGlowSecondary: "rgba(2, 6, 23, 0.04)",
+    surface: "#ffffff",
+    surfaceStrong: "#f3f6fb",
+    panel: "#ffffff",
+    panelMuted: "#f6f8fb",
+    border: "#d0d7de",
+    borderStrong: "#8c959f",
+    textPrimary: "#1f2328",
+    textSecondary: "#59636e",
+    accent: "#0969da",
+    accentStrong: "#0550ae",
+    accentSoft: "rgba(9, 105, 218, 0.08)",
+    codeBackground: "#f6f8fa",
+    codeBorder: "#d8dee4",
+    codeText: "#1f2328",
+    success: "#1a7f37",
+    warning: "#9a6700",
+    danger: "#cf222e"
   },
   radius: {
-    card: "18px",
-    control: "10px"
+    card: "16px",
+    control: "12px"
   },
-  shadow: "0 18px 48px rgba(2, 6, 23, 0.36)"
+  shadow: "0 12px 28px rgba(31, 35, 40, 0.08)"
 };
 
 export type AppTheme = typeof appTheme;

@@ -24,17 +24,22 @@ import {
   Result,
   SectionHeader,
   SectionLabel,
+  SummaryCard,
+  SummaryText,
   Tag,
   TagRow,
   Textarea,
   WorkflowCard,
   WorkflowGrid,
+  WorkflowMain,
+  WorkflowSide,
   WorkspaceSection
 } from "../chatMongo.styles";
-import type { CopyDictionary, DemoCase, Message } from "../chatMongo.types";
+import type { CopyDictionary, DemoCase, Language, Message } from "../chatMongo.types";
 
 interface ChatMongoWorkspacePanelProps {
   copy: CopyDictionary;
+  language: Language;
   input: string;
   mongoShell: string;
   resultView: string;
@@ -91,8 +96,45 @@ const renderHighlightedMongoCode = (value: string): ReactNode => {
   });
 };
 
+const stringifyValue = (value: unknown): string => JSON.stringify(value, null, 2);
+
+const buildOperationSummary = (copy: CopyDictionary, language: Language, operation: MongoOperation | null): string => {
+  if (!operation) {
+    return copy.reviewSummaryEmpty;
+  }
+
+  if (operation.action === "find") {
+    return language === "es"
+      ? `Buscar en ${operation.collection} con el filtro ${JSON.stringify(operation.filter ?? {})}.`
+      : `Find documents in ${operation.collection} using the filter ${JSON.stringify(operation.filter ?? {})}.`;
+  }
+
+  if (operation.action === "count") {
+    return language === "es"
+      ? `Contar documentos en ${operation.collection} usando el filtro ${JSON.stringify(operation.filter ?? {})}.`
+      : `Count documents in ${operation.collection} using the filter ${JSON.stringify(operation.filter ?? {})}.`;
+  }
+
+  if (operation.action === "insertOne") {
+    return language === "es"
+      ? `Insertar un documento nuevo en ${operation.collection}.`
+      : `Insert a new document into ${operation.collection}.`;
+  }
+
+  if (operation.action === "updateMany") {
+    return language === "es"
+      ? `Actualizar documentos en ${operation.collection} que cumplan ${JSON.stringify(operation.filter ?? {})}.`
+      : `Update documents in ${operation.collection} that match ${JSON.stringify(operation.filter ?? {})}.`;
+  }
+
+  return language === "es"
+    ? `Eliminar documentos en ${operation.collection} que cumplan ${JSON.stringify(operation.filter ?? {})}.`
+    : `Delete documents in ${operation.collection} that match ${JSON.stringify(operation.filter ?? {})}.`;
+};
+
 export function ChatMongoWorkspacePanel({
   copy,
+  language,
   input,
   mongoShell,
   resultView,
@@ -114,12 +156,14 @@ export function ChatMongoWorkspacePanel({
   const effectiveResolver = isInteractive ? resolver : selectedDemo.llmMode === "force" ? "llm" : "deterministic";
   const effectiveInput = isInteractive ? input : selectedDemo.text;
   const hasOperation = effectiveOperation != null && effectiveMongoShell.length > 0;
+  const isDestructive = effectiveOperation?.action === "updateMany" || effectiveOperation?.action === "deleteMany";
+  const summaryText = buildOperationSummary(copy, language, effectiveOperation);
   const visibleLogs = isInteractive
     ? messages.slice(-6).reverse()
     : [
         { id: "hosted-demo-1", role: "user" as const, text: selectedDemo.text },
         { id: "hosted-demo-2", role: "assistant" as const, text: `${copy.queryReadyLabel}\n${selectedDemo.mongoShell}` },
-        { id: "hosted-demo-3", role: "assistant" as const, text: JSON.stringify(selectedDemo.mockResult, null, 2) }
+        { id: "hosted-demo-3", role: "assistant" as const, text: stringifyValue(selectedDemo.mockResult) }
       ];
 
   return (
@@ -144,76 +188,128 @@ export function ChatMongoWorkspacePanel({
       ) : null}
 
       <PipelineRail aria-label="workflow-pipeline">
-        {copy.flowSteps.slice(0, 5).map((step) => (
-          <PipelineStep key={step.id}>
-            <MutedText>{step.title}</MutedText>
+        {copy.flowSteps
+          .filter((step) => ["input", "query", "mongo", "result"].includes(step.id))
+          .map((step) => (
+          <PipelineStep
+            key={step.id}
+            $active={
+              (step.id === "input" && effectiveInput.trim().length > 0) ||
+              (step.id === "query" && hasOperation) ||
+              (step.id === "mongo" && (hasOperation || isExecuting)) ||
+              (step.id === "result" && effectiveResultView.length > 0)
+            }
+          >
+            <SectionLabel>{step.title}</SectionLabel>
+            <MutedText>{step.detail}</MutedText>
           </PipelineStep>
         ))}
       </PipelineRail>
 
       <WorkflowGrid>
-        <WorkflowCard>
-          <WorkspaceSection>
-            <SectionLabel>{copy.instructionTitle}</SectionLabel>
-            <Form onSubmit={onGenerate}>
-              <Textarea
-                placeholder={copy.placeholder}
-                value={effectiveInput}
-                onChange={(event) => onInputChange(event.target.value)}
-                aria-label="chat-input"
-                disabled={!isInteractive}
-              />
+        <WorkflowMain>
+          <WorkflowCard>
+            <WorkspaceSection>
+              <SectionHeader>
+                <div>
+                  <SectionLabel>{copy.instructionTitle}</SectionLabel>
+                  <PanelTitle>{copy.chatTitle}</PanelTitle>
+                </div>
+                <Tag $tone={hasOperation ? "success" : "default"}>{hasOperation ? copy.statusReady : copy.statusWaiting}</Tag>
+              </SectionHeader>
+              <SummaryText>{copy.instructionHelper}</SummaryText>
+              <Form onSubmit={onGenerate}>
+                <Textarea
+                  placeholder={copy.placeholder}
+                  value={effectiveInput}
+                  onChange={(event) => onInputChange(event.target.value)}
+                  aria-label="chat-input"
+                  disabled={!isInteractive}
+                />
+                <ActionRow>
+                  <Button type="submit" disabled={isSending || !isInteractive}>
+                    {isSending ? copy.generatingButton : copy.generateButton}
+                  </Button>
+                </ActionRow>
+              </Form>
+            </WorkspaceSection>
+          </WorkflowCard>
+
+          <WorkflowCard>
+            <WorkspaceSection>
+              <SectionHeader>
+                <div>
+                  <SectionLabel>{copy.generatedQueryTitle}</SectionLabel>
+                  <PanelTitle>{copy.reviewHelper}</PanelTitle>
+                </div>
+                {effectiveOperation ? <Tag>{`${effectiveOperation.action} · ${effectiveOperation.collection}`}</Tag> : null}
+              </SectionHeader>
+              <SummaryCard $tone={isDestructive ? "danger" : "default"}>
+                <SectionLabel>{copy.statusTitle}</SectionLabel>
+                <SummaryText>{summaryText}</SummaryText>
+                <MutedText>{isDestructive ? copy.destructiveExecutionHint : copy.safeExecutionHint}</MutedText>
+              </SummaryCard>
+              <Code aria-label="generated-query">
+                {effectiveMongoShell ? renderHighlightedMongoCode(effectiveMongoShell) : copy.noGeneratedQuery}
+              </Code>
               <ActionRow>
-                <Button type="submit" disabled={isSending || !isInteractive}>
-                  {isSending ? copy.generatingButton : copy.generateButton}
+                <Button
+                  type="button"
+                  $variant={isDestructive ? "danger" : "secondary"}
+                  onClick={() => void onExecute()}
+                  disabled={!hasOperation || isExecuting || !isInteractive}
+                >
+                  {isExecuting ? copy.executingButton : copy.executeButton}
                 </Button>
               </ActionRow>
-            </Form>
-          </WorkspaceSection>
-        </WorkflowCard>
+            </WorkspaceSection>
+          </WorkflowCard>
 
-        <WorkflowCard>
-          <WorkspaceSection>
-            <SectionHeader>
-              <SectionLabel>{copy.generatedQueryTitle}</SectionLabel>
-              {effectiveOperation ? <Tag>{`${effectiveOperation.action} · ${effectiveOperation.collection}`}</Tag> : null}
-            </SectionHeader>
-            <Code aria-label="generated-query">
-              {effectiveMongoShell ? renderHighlightedMongoCode(effectiveMongoShell) : copy.noGeneratedQuery}
-            </Code>
-            <ActionRow>
-              <Button
-                type="button"
-                $variant="secondary"
-                onClick={() => void onExecute()}
-                disabled={!hasOperation || isExecuting || !isInteractive}
-              >
-                {isExecuting ? copy.executingButton : copy.executeButton}
-              </Button>
-            </ActionRow>
-          </WorkspaceSection>
-        </WorkflowCard>
+          <WorkflowCard>
+            <WorkspaceSection>
+              <SectionHeader>
+                <div>
+                  <SectionLabel>{copy.resultTitle}</SectionLabel>
+                  <PanelTitle>{copy.databaseViewerOutcomeTitle}</PanelTitle>
+                </div>
+              </SectionHeader>
+              <Result aria-label="execution-result">{effectiveResultView || copy.noResult}</Result>
+            </WorkspaceSection>
+          </WorkflowCard>
+        </WorkflowMain>
 
-        <WorkflowCard>
-          <WorkspaceSection>
-            <SectionLabel>{copy.resultTitle}</SectionLabel>
-            <Result aria-label="execution-result">{effectiveResultView || copy.noResult}</Result>
-          </WorkspaceSection>
-        </WorkflowCard>
+        <WorkflowSide>
+          <WorkflowCard>
+            <WorkspaceSection>
+              <SectionLabel>{copy.selectedDemoTitle}</SectionLabel>
+              <PanelTitle>{selectedDemo.label}</PanelTitle>
+              <SummaryText>{copy.selectedDemoHelper}</SummaryText>
+              <SummaryCard>
+                <SummaryText>{selectedDemo.text}</SummaryText>
+              </SummaryCard>
+            </WorkspaceSection>
+          </WorkflowCard>
 
-        <WorkflowCard>
-          <WorkspaceSection>
-            <SectionLabel>{copy.logsTitle}</SectionLabel>
-            <LogList aria-label="activity-logs">
-              {visibleLogs.map((message, index) => (
-                <LogItem key={`${message.id}-${index}`}>
-                  <LogBadge $role={message.role}>{message.role === "user" ? "user" : "system"}</LogBadge>
-                  <DatabaseRecordPre>{message.text}</DatabaseRecordPre>
-                </LogItem>
-              ))}
-            </LogList>
-          </WorkspaceSection>
-        </WorkflowCard>
+          <WorkflowCard>
+            <WorkspaceSection>
+              <SectionLabel>{copy.logsTitle}</SectionLabel>
+              <LogList aria-label="activity-logs">
+                {visibleLogs.length === 0 ? (
+                  <SummaryCard>
+                    <MutedText>{copy.historyEmpty}</MutedText>
+                  </SummaryCard>
+                ) : (
+                  visibleLogs.map((message, index) => (
+                    <LogItem key={`${message.id}-${index}`}>
+                      <LogBadge $role={message.role}>{message.role === "user" ? "user" : "system"}</LogBadge>
+                      <DatabaseRecordPre>{message.text}</DatabaseRecordPre>
+                    </LogItem>
+                  ))
+                )}
+              </LogList>
+            </WorkspaceSection>
+          </WorkflowCard>
+        </WorkflowSide>
       </WorkflowGrid>
 
       {error ? <ErrorText role="alert">{error}</ErrorText> : null}

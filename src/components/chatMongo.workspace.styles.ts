@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const Panel = styled.section`
   display: grid;
-  gap: 16px;
-  padding: 24px;
+  gap: 18px;
+  padding: 22px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius.card};
   background: ${({ theme }) => theme.colors.surface};
@@ -12,50 +12,89 @@ export const Panel = styled.section`
 
 export const PanelTitle = styled.h2`
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 700;
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 export const InfoText = styled.p`
   margin: 0;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 export const MutedText = styled.span`
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.5;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 export const ErrorText = styled.p`
   margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(207, 34, 46, 0.18);
+  border-radius: 12px;
+  background: rgba(207, 34, 46, 0.06);
   font-size: 13px;
   line-height: 1.5;
   color: ${({ theme }) => theme.colors.danger};
 `;
 
-export const Tag = styled.span<{ $tone?: "default" | "success" | "warning" }>`
+export const Tag = styled.span<{ $tone?: "default" | "success" | "warning" | "danger" }>`
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  height: 24px;
+  min-height: 28px;
   padding: 0 10px;
   border-radius: 999px;
   border: 1px solid
-    ${({ $tone, theme }) =>
-      $tone === "success" ? "rgba(34, 197, 94, 0.24)" : $tone === "warning" ? "rgba(245, 158, 11, 0.24)" : theme.colors.border};
-  background: ${({ $tone, theme }) =>
-    $tone === "success"
-      ? "rgba(34, 197, 94, 0.12)"
-      : $tone === "warning"
-        ? "rgba(245, 158, 11, 0.12)"
-        : "rgba(15, 23, 42, 0.84)"};
-  color: ${({ $tone, theme }) =>
-    $tone === "success" ? theme.colors.success : $tone === "warning" ? theme.colors.warning : theme.colors.textSecondary};
+    ${({ $tone, theme }) => {
+      if ($tone === "success") {
+        return "rgba(26, 127, 55, 0.2)";
+      }
+
+      if ($tone === "warning") {
+        return "rgba(154, 103, 0, 0.22)";
+      }
+
+      if ($tone === "danger") {
+        return "rgba(207, 34, 46, 0.2)";
+      }
+
+      return theme.colors.border;
+    }};
+  background: ${({ $tone, theme }) => {
+    if ($tone === "success") {
+      return "rgba(26, 127, 55, 0.08)";
+    }
+
+    if ($tone === "warning") {
+      return "rgba(154, 103, 0, 0.08)";
+    }
+
+    if ($tone === "danger") {
+      return "rgba(207, 34, 46, 0.08)";
+    }
+
+    return theme.colors.panelMuted;
+  }};
+  color: ${({ $tone, theme }) => {
+    if ($tone === "success") {
+      return theme.colors.success;
+    }
+
+    if ($tone === "warning") {
+      return theme.colors.warning;
+    }
+
+    if ($tone === "danger") {
+      return theme.colors.danger;
+    }
+
+    return theme.colors.textSecondary;
+  }};
   font-size: 12px;
   font-weight: 600;
 `;
@@ -69,8 +108,9 @@ export const TagRow = styled.div`
 
 export const SectionLabel = styled.span`
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
@@ -81,26 +121,27 @@ export const WorkspaceSection = styled.section`
 
 export const PipelineRail = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
 
-  @media (max-width: 900px) {
+  @media (max-width: 820px) {
     grid-template-columns: 1fr;
   }
 `;
 
-export const PipelineStep = styled.div`
+export const PipelineStep = styled.div<{ $active?: boolean }>`
   display: grid;
   gap: 4px;
-  padding: 12px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
-  background: #0b1220;
+  padding: 14px;
+  border: 1px solid ${({ $active, theme }) => ($active ? theme.colors.accent : theme.colors.border)};
+  border-radius: 12px;
+  background: ${({ $active, theme }) => ($active ? theme.colors.accentSoft : theme.colors.panelMuted)};
+  box-shadow: ${({ $active }) => ($active ? "0 0 0 1px rgba(9, 105, 218, 0.06) inset" : "none")};
 `;
 
 export const WorkflowGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
   gap: 16px;
 
   @media (max-width: 1080px) {
@@ -108,44 +149,52 @@ export const WorkflowGrid = styled.div`
   }
 `;
 
-export const InstallList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
+export const WorkflowMain = styled.div`
   display: grid;
-  gap: 10px;
+  gap: 16px;
+  min-width: 0;
 `;
 
-export const InstallItem = styled.li`
+export const WorkflowSide = styled.aside`
   display: grid;
-  gap: 6px;
+  gap: 16px;
+  align-content: start;
+  min-width: 0;
 `;
 
 export const WorkflowCard = styled.section`
   display: grid;
-  gap: 12px;
-  padding: 16px;
+  gap: 14px;
+  padding: 18px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 14px;
-  background: #0b1220;
+  background: ${({ theme }) => theme.colors.surface};
   min-width: 0;
-  align-content: start;
+`;
+
+export const SummaryCard = styled.div<{ $tone?: "default" | "danger" }>`
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid
+    ${({ $tone, theme }) => ($tone === "danger" ? "rgba(207, 34, 46, 0.18)" : theme.colors.border)};
+  border-radius: 12px;
+  background: ${({ $tone, theme }) => ($tone === "danger" ? "rgba(207, 34, 46, 0.05)" : theme.colors.panelMuted)};
+`;
+
+export const SummaryText = styled.p`
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 export const SectionHeader = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-`;
-
-export const UtilityField = styled.label`
-  display: grid;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 export const Form = styled.form`
@@ -155,16 +204,20 @@ export const Form = styled.form`
 
 export const Textarea = styled.textarea`
   width: 100%;
-  min-height: 140px;
+  min-height: 156px;
   padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
-  background: #020617;
+  border-radius: 12px;
+  background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.textPrimary};
   resize: vertical;
-  font-family: var(--font-mono), "JetBrains Mono", monospace;
-  font-size: 13px;
+  font-family: var(--font-ui), "Inter", sans-serif;
+  font-size: 14px;
   line-height: 1.6;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.textSecondary};
+  }
 
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.accent};
@@ -179,37 +232,68 @@ export const ActionRow = styled.div`
   flex-wrap: wrap;
 `;
 
-export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghost" }>`
-  height: 40px;
+export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghost" | "danger" }>`
+  min-height: 40px;
   padding: 0 16px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid
-    ${({ $variant, theme }) =>
-      $variant === "secondary" ? "rgba(34, 197, 94, 0.28)" : $variant === "ghost" ? theme.colors.border : theme.colors.accent};
-  background: ${({ $variant, theme }) =>
-    $variant === "secondary"
-      ? theme.colors.success
-      : $variant === "ghost"
-        ? "transparent"
-        : theme.colors.accent};
-  color: ${({ $variant }) => ($variant === "ghost" ? "#e6edf3" : "#eff6ff")};
+    ${({ $variant, theme }) => {
+      if ($variant === "secondary") {
+        return theme.colors.border;
+      }
+
+      if ($variant === "ghost") {
+        return theme.colors.border;
+      }
+
+      if ($variant === "danger") {
+        return theme.colors.danger;
+      }
+
+      return theme.colors.accent;
+    }};
+  background: ${({ $variant, theme }) => {
+    if ($variant === "secondary") {
+      return theme.colors.surface;
+    }
+
+    if ($variant === "ghost") {
+      return theme.colors.panelMuted;
+    }
+
+    if ($variant === "danger") {
+      return theme.colors.danger;
+    }
+
+    return theme.colors.accent;
+  }};
+  color: ${({ $variant, theme }) => (($variant === "primary" || $variant === "danger") ? "#ffffff" : theme.colors.textPrimary)};
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 
   &:hover:not(:disabled) {
-    transform: translateY(-1px);
-    background: ${({ $variant, theme }) =>
-      $variant === "secondary" ? "#16a34a" : $variant === "ghost" ? "#0b1220" : theme.colors.accentStrong};
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset, 0 10px 24px rgba(37, 99, 235, 0.16);
+    background: ${({ $variant, theme }) => {
+      if ($variant === "secondary") {
+        return theme.colors.panelMuted;
+      }
+
+      if ($variant === "ghost") {
+        return theme.colors.surfaceStrong;
+      }
+
+      if ($variant === "danger") {
+        return "#b62324";
+      }
+
+      return theme.colors.accentStrong;
+    }};
   }
 
   &:disabled {
-    opacity: 0.48;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
   }
 
   &:focus-visible {
@@ -220,10 +304,10 @@ export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghos
 
 export const Code = styled.pre`
   margin: 0;
-  min-height: 220px;
+  min-height: 180px;
   padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.codeBorder};
-  border-radius: 10px;
+  border-radius: 12px;
   background: ${({ theme }) => theme.colors.codeBackground};
   color: ${({ theme }) => theme.colors.codeText};
   overflow: auto;
@@ -234,12 +318,12 @@ export const Code = styled.pre`
 
 export const Result = styled.pre`
   margin: 0;
-  min-height: 220px;
+  min-height: 180px;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
-  background: #020617;
-  color: ${({ theme }) => theme.colors.textPrimary};
+  border: 1px solid ${({ theme }) => theme.colors.codeBorder};
+  border-radius: 12px;
+  background: ${({ theme }) => theme.colors.codeBackground};
+  color: ${({ theme }) => theme.colors.codeText};
   overflow: auto;
   font-family: var(--font-mono), "JetBrains Mono", monospace;
   font-size: 13px;
@@ -256,39 +340,73 @@ export const CodeTokenPlain = styled.span`
 `;
 
 export const CodeTokenMethod = styled.span`
-  color: #a78bfa;
+  color: ${({ theme }) => theme.colors.accentStrong};
+  font-weight: 600;
 `;
 
 export const CodeTokenKey = styled.span`
-  color: #60a5fa;
+  color: #8250df;
 `;
 
 export const CodeTokenString = styled.span`
-  color: #34d399;
+  color: #0a7b83;
 `;
 
 export const CodeTokenNumber = styled.span`
-  color: #f59e0b;
+  color: #9a6700;
+`;
+
+export const LogList = styled.div`
+  display: grid;
+  gap: 10px;
+`;
+
+export const LogItem = styled.div`
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 12px;
+  background: ${({ theme }) => theme.colors.panelMuted};
+`;
+
+export const LogBadge = styled.span<{ $role: "user" | "assistant" }>`
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: ${({ $role, theme }) => ($role === "user" ? theme.colors.accentSoft : theme.colors.surfaceStrong)};
+  color: ${({ $role, theme }) => ($role === "user" ? theme.colors.accentStrong : theme.colors.textSecondary)};
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
 `;
 
 export const DatabaseViewer = styled.section`
   display: grid;
   gap: 16px;
-  padding: 18px;
+  padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radius.card};
-  background: #020617;
+  background: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadow};
 `;
 
 export const DatabaseViewerLayout = styled.div`
   display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
   gap: 16px;
-  grid-template-rows: auto minmax(0, 1fr);
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const DatabaseSidebar = styled.div`
   display: grid;
+  align-content: start;
   gap: 8px;
 `;
 
@@ -297,21 +415,19 @@ export const DatabaseCollectionButton = styled.button<{ $active: boolean }>`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 40px;
+  min-height: 42px;
   padding: 0 12px;
-  border: 1px solid ${({ $active, theme }) => ($active ? theme.colors.borderStrong : theme.colors.border)};
-  border-radius: 8px;
-  background: ${({ $active }) => ($active ? "rgba(59, 130, 246, 0.1)" : "#030b1a")};
-  color: ${({ $active, theme }) => ($active ? theme.colors.textPrimary : theme.colors.textSecondary)};
+  border: 1px solid ${({ $active, theme }) => ($active ? theme.colors.accent : theme.colors.border)};
+  border-radius: 10px;
+  background: ${({ $active, theme }) => ($active ? theme.colors.accentSoft : theme.colors.panelMuted)};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-align: left;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 
   &:hover {
-    background: #0b1220;
-    color: ${({ theme }) => theme.colors.textPrimary};
+    background: ${({ theme }) => theme.colors.surfaceStrong};
   }
 
   &:focus-visible {
@@ -324,78 +440,43 @@ export const DatabaseCount = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 30px;
-  height: 22px;
+  min-width: 28px;
+  height: 24px;
   padding: 0 8px;
   border-radius: 999px;
-  background: rgba(59, 130, 246, 0.14);
-  color: ${({ theme }) => theme.colors.accent};
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-size: 12px;
   font-weight: 700;
 `;
 
-export const DatabaseRecords = styled.div`
+export const DatabaseRecords = styled.section`
   display: grid;
-  gap: 10px;
+  gap: 12px;
+  min-width: 0;
 `;
 
-export const DatabaseRecordList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
+export const DatabaseRecordList = styled.div`
   display: grid;
-  gap: 8px;
+  gap: 10px;
   max-height: 520px;
   overflow: auto;
 `;
 
-export const DatabaseRecordItem = styled.li`
-  padding: 12px;
+export const DatabaseRecordItem = styled.article`
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
-  background: #030b1a;
+  border-radius: 12px;
+  background: ${({ theme }) => theme.colors.panelMuted};
+  overflow: hidden;
 `;
 
 export const DatabaseRecordPre = styled.pre`
   margin: 0;
+  padding: 14px;
+  color: ${({ theme }) => theme.colors.codeText};
   white-space: pre-wrap;
   word-break: break-word;
-  color: ${({ theme }) => theme.colors.textPrimary};
   font-family: var(--font-mono), "JetBrains Mono", monospace;
-  font-size: 13px;
-  line-height: 1.55;
-`;
-
-export const LogList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-  max-height: 220px;
-  overflow: auto;
-`;
-
-export const LogItem = styled.li`
-  display: grid;
-  gap: 6px;
-  padding: 12px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 10px;
-  background: #030b1a;
-`;
-
-export const LogBadge = styled.span<{ $role: "user" | "assistant" }>`
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  height: 22px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: ${({ $role }) => ($role === "user" ? "rgba(59, 130, 246, 0.14)" : "rgba(34, 197, 94, 0.12)")};
-  color: ${({ $role, theme }) => ($role === "user" ? theme.colors.accent : theme.colors.success)};
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 1.6;
 `;

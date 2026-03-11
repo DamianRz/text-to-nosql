@@ -44,7 +44,9 @@ export interface CopyDictionary {
   sidebarDemosTitle: string;
   sidebarSettingsTitle: string;
   instructionTitle: string;
+  instructionHelper: string;
   logsTitle: string;
+  historyEmpty: string;
   presentationHint: string;
   previewModeLabel: string;
   previewHostedLabel: string;
@@ -75,7 +77,9 @@ export interface CopyDictionary {
   localSimulationNotice: string;
   localSimulationTag: string;
   databaseViewerTitle: string;
+  databaseViewerOutcomeTitle: string;
   databaseViewerDescription: string;
+  databaseViewerOutcomeDescription: string;
   databaseCollectionsTitle: string;
   databaseRecordsTitle: string;
   databaseEmptyState: string;
@@ -99,6 +103,15 @@ export interface CopyDictionary {
   demoLoadedMessage: string;
   chatTitle: string;
   workspaceDescription: string;
+  selectedDemoTitle: string;
+  selectedDemoHelper: string;
+  statusTitle: string;
+  statusReady: string;
+  statusWaiting: string;
+  reviewHelper: string;
+  reviewSummaryEmpty: string;
+  safeExecutionHint: string;
+  destructiveExecutionHint: string;
   initialMessage: string;
   placeholder: string;
   generateButton: string;

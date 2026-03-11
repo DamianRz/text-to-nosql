@@ -16,21 +16,21 @@ This repository includes a versioned commit hook at `.githooks/commit-msg`. Runn
 
 ## Commit types
 
-| Icon | Type | Description |
+| Visual token | Type | Description |
 | --- | --- | --- |
-| ✨ | `feat` | Introduces a new feature |
-| 🐛 | `fix` | Fixes a bug |
-| ♻️ | `refactor` | Code restructuring without behavior change |
-| ⚡ | `perf` | Performance improvements |
-| 🧹 | `chore` | Maintenance tasks or tooling |
-| 🧪 | `test` | Add or update tests |
-| 📚 | `docs` | Documentation changes |
-| 🎨 | `style` | Formatting or stylistic updates |
-| 🔧 | `config` | Configuration updates |
-| 🏗 | `build` | Build system or dependency changes |
-| 🚀 | `deploy` | Deployment related changes |
-| 🔒 | `security` | Security fixes or improvements |
-| 🗑 | `remove` | Remove deprecated or unused code |
+| `[feature]` | `feat` | Introduces a new feature |
+| `[bug]` | `fix` | Fixes a bug |
+| `[refactor]` | `refactor` | Code restructuring without behavior change |
+| `[perf]` | `perf` | Performance improvements |
+| `[chore]` | `chore` | Maintenance tasks or tooling |
+| `[test]` | `test` | Add or update tests |
+| `[docs]` | `docs` | Documentation changes |
+| `[style]` | `style` | Formatting or stylistic updates |
+| `[config]` | `config` | Configuration updates |
+| `[build]` | `build` | Build system or dependency changes |
+| `[deploy]` | `deploy` | Deployment related changes |
+| `[security]` | `security` | Security fixes or improvements |
+| `[remove]` | `remove` | Remove deprecated or unused code |
 
 ## Scope
 
@@ -59,37 +59,37 @@ feat(api): add query execution endpoint
 ### Feature
 
 ```text
-✨ feat(pipeline): add natural language query parser
+feat(pipeline): add natural language query parser
 ```
 
 ### Bug fix
 
 ```text
-🐛 fix(database): correct MongoDB aggregation result parsing
+fix(database): correct MongoDB aggregation result parsing
 ```
 
 ### Refactor
 
 ```text
-♻️ refactor(core): simplify execution runner logic
+refactor(core): simplify execution runner logic
 ```
 
 ### Performance
 
 ```text
-⚡ perf(query-engine): optimize filter evaluation
+perf(query-engine): optimize filter evaluation
 ```
 
 ### Documentation
 
 ```text
-📚 docs(readme): update installation instructions
+docs(readme): update installation instructions
 ```
 
 ### Configuration
 
 ```text
-🔧 config(env): add support for local Mistral model
+config(env): add support for local Mistral model
 ```
 
 ## Commit body
@@ -99,7 +99,7 @@ Use the body to explain why the change was made.
 Example:
 
 ```text
-✨ feat(agent): implement dynamic action planner
+feat(agent): implement dynamic action planner
 
 Adds support for generating execution plans based on natural
 language queries using the local LLM pipeline.
@@ -130,7 +130,7 @@ Breaking-Change: query schema updated
 ## Full example
 
 ```text
-✨ feat(pipeline): implement semantic action detection
+feat(pipeline): implement semantic action detection
 
 Adds an AI-powered classifier that converts user queries
 into structured database actions.

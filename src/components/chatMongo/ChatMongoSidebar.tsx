@@ -47,6 +47,7 @@ export function ChatMongoSidebar({
         <SidebarLogo>Natural to MongoDB</SidebarLogo>
         <SidebarProject>
           <SidebarProjectName>Natural to MongoDB</SidebarProjectName>
+          <MutedText>{copy.demoDescription}</MutedText>
         </SidebarProject>
       </SidebarBrand>
 
@@ -60,7 +61,8 @@ export function ChatMongoSidebar({
               $active={demo.id === selectedDemoId}
               onClick={() => onSelectDemo(demo.id)}
             >
-              {demo.label}
+              <span>{demo.label}</span>
+              <MutedText>{demo.text}</MutedText>
             </SidebarNavButton>
           ))}
         </SidebarNav>
@@ -88,6 +90,10 @@ export function ChatMongoSidebar({
           <SidebarMetaItem>
             <MutedText>{copy.languageLabel}</MutedText>
             <span>{language === "es" ? copy.languageSpanish : copy.languageEnglish}</span>
+          </SidebarMetaItem>
+          <SidebarMetaItem>
+            <MutedText>{copy.statusTitle}</MutedText>
+            <span>{isInteractive ? copy.statusWaiting : copy.hostedWorkspaceNotice}</span>
           </SidebarMetaItem>
         </SidebarMetaList>
       </SidebarSection>

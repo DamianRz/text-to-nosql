@@ -359,6 +359,7 @@ export function ChatMongo() {
         <WorkspaceColumn>
           <ChatMongoWorkspacePanel
             copy={copy}
+            language={language}
             input={input}
             mongoShell={mongoShell}
             resultView={resultView}
@@ -377,7 +378,11 @@ export function ChatMongo() {
         </WorkspaceColumn>
 
         <ResultsColumn>
-          <ChatMongoDatabaseViewer copy={copy} collections={localCollections} preferredCollectionName={selectedDemo.operation.collection} />
+          <ChatMongoDatabaseViewer
+            copy={copy}
+            collections={localCollections}
+            preferredCollectionName={operation?.collection ?? selectedDemo.operation.collection}
+          />
         </ResultsColumn>
       </Container>
     </Page>

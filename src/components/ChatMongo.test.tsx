@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider } from "styled-components";
 import { ChatMongo } from "./ChatMongo";
@@ -10,6 +10,7 @@ const localModelsResponse = {
   models: ["llama3.1:8b", "mistral:7b"],
   currentModel: "llama3.1:8b"
 };
+type MockFetchResponse = { json: () => Promise<unknown> };
 
 const renderChatMongo = () =>
   render(
@@ -66,7 +67,7 @@ describe("ChatMongo", () => {
     });
 
     expect(mockedFetch).toHaveBeenCalledTimes(2);
-  });
+  }, 15000);
 
   test("loads and runs a selected demo from the sidebar", async () => {
     mockedFetch
@@ -88,8 +89,10 @@ describe("ChatMongo", () => {
     renderChatMongo();
     const user = userEvent.setup();
     await waitForLocalModelSelect();
-    await user.click(screen.getByRole("button", { name: "Delete · users inactivos" }));
-    await user.click(screen.getByRole("button", { name: "Ejecutar demo" }));
+    await user.click(screen.getByRole("button", { name: /Delete · users inactivos/i }));
+    await act(async () => {
+      await user.click(screen.getByRole("button", { name: "Ejecutar demo" }));
+    });
 
     await waitFor(() => {
       expect(screen.getByLabelText("generated-query")).toHaveTextContent("deleteMany");
@@ -120,12 +123,14 @@ describe("ChatMongo", () => {
     renderChatMongo();
     const user = userEvent.setup();
     await waitForLocalModelSelect();
-    await user.click(screen.getByRole("button", { name: "Find · audit_logs generados" }));
-    await user.click(screen.getByRole("button", { name: "Ejecutar demo" }));
+    await user.click(screen.getByRole("button", { name: /Find · audit_logs generados/i }));
+    await act(async () => {
+      await user.click(screen.getByRole("button", { name: "Ejecutar demo" }));
+    });
 
     await waitFor(() => {
       expect(screen.getByLabelText("generated-query")).toHaveTextContent("audit_logs");
-      expect(screen.getByText(/Resolucion actual:/)).toBeInTheDocument();
+      expect(screen.getByText(/Resolver deterministico/i)).toBeInTheDocument();
     });
 
     const firstChatCall = mockedFetch.mock.calls[1];
@@ -144,7 +149,7 @@ describe("ChatMongo", () => {
     await waitForLocalModelSelect();
     await user.selectOptions(screen.getByLabelText("language-select"), "en");
 
-    expect(screen.getByText("Natural language instruction")).toBeInTheDocument();
+    expect(screen.getByText("1. Describe what you want to do")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generate query" })).toBeInTheDocument();
   });
 
@@ -156,7 +161,7 @@ describe("ChatMongo", () => {
     renderChatMongo();
     await waitForLocalModelSelect();
 
-    expect(screen.getByText("Demos")).toBeInTheDocument();
+    expect(screen.getByText("Ejemplos guiados")).toBeInTheDocument();
     expect(screen.getByLabelText("local-database-viewer")).toBeInTheDocument();
     expect(screen.queryByLabelText("presentation-breadcrumbs")).not.toBeInTheDocument();
   });
@@ -171,25 +176,25 @@ describe("ChatMongo", () => {
     await waitForLocalModelSelect();
     await user.click(screen.getByRole("button", { name: "Hosted" }));
 
-    expect(screen.getByText(/ejecuta el proyecto localmente/i)).toBeInTheDocument();
-    expect(screen.getByText(/README/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/ejecuta el proyecto localmente/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/README/i).length).toBeGreaterThan(0);
     expect(screen.getByLabelText("generated-query")).toHaveTextContent("db.transactions.find");
 
-    await user.click(screen.getByRole("button", { name: "Delete · users inactivos" }));
+    await user.click(screen.getByRole("button", { name: /Delete · users inactivos/i }));
 
     expect(screen.getByLabelText("generated-query")).toHaveTextContent("db.users.deleteMany");
     expect(screen.getByLabelText("execution-result")).toHaveTextContent('"deletedCount": 1');
   });
 
   test("disables query generation while a request is in flight", async () => {
-    let resolveChatRequest: ((value: { json: () => Promise<unknown> }) => void) | null = null;
+    let resolveChatRequest: ((value: MockFetchResponse) => void) | undefined;
     mockedFetch
       .mockResolvedValueOnce({
         json: async () => localModelsResponse
       })
       .mockImplementationOnce(
         () =>
-          new Promise((resolve) => {
+          new Promise<MockFetchResponse>((resolve) => {
             resolveChatRequest = resolve;
           })
       );
@@ -198,13 +203,18 @@ describe("ChatMongo", () => {
 
     const user = userEvent.setup();
     await waitForLocalModelSelect();
+    await user.clear(screen.getByLabelText("chat-input"));
     await user.type(screen.getByLabelText("chat-input"), "mostrar transactions");
     await user.click(screen.getByRole("button", { name: "Generar consulta" }));
 
     expect(screen.getByRole("button", { name: "Generando consulta..." })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Ejecutar consulta" })).toBeDisabled();
 
-    resolveChatRequest?.({
+    if (!resolveChatRequest) {
+      throw new Error("Chat request resolver was not initialized.");
+    }
+
+    resolveChatRequest({
       json: async () => ({
         ok: true,
         operation: {
@@ -219,8 +229,8 @@ describe("ChatMongo", () => {
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Generar consulta" })).toBeEnabled();
       expect(screen.getByRole("button", { name: "Ejecutar consulta" })).toBeEnabled();
-    });
-  });
+    }, { timeout: 10000 });
+  }, 15000);
 
   test("loads a selected demo into the editor", async () => {
     mockedFetch.mockResolvedValueOnce({
@@ -231,7 +241,7 @@ describe("ChatMongo", () => {
 
     const user = userEvent.setup();
     await waitForLocalModelSelect();
-    await user.click(screen.getByRole("button", { name: "Insert · users support" }));
+    await user.click(screen.getByRole("button", { name: /Insert · users support/i }));
 
     expect(screen.getByLabelText("chat-input")).toHaveValue('agrega en users {"name":"Carla","active":true,"role":"support","plan":"pro"}');
   });

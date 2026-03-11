@@ -2,8 +2,10 @@
 import { closeMongoConnection, getMongoDb } from "./client";
 import { executeMongoOperation } from "./executeMongoOperation";
 
-describe("executeMongoOperation", () => {
-  let mongoServer: MongoMemoryServer;
+const describeWithMongoMemoryServer = process.platform === "android" ? describe.skip : describe;
+
+describeWithMongoMemoryServer("executeMongoOperation", () => {
+  let mongoServer: MongoMemoryServer | null = null;
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
@@ -23,7 +25,7 @@ describe("executeMongoOperation", () => {
 
   afterAll(async () => {
     await closeMongoConnection();
-    await mongoServer.stop();
+    await mongoServer?.stop();
   });
 
   test("executes find", async () => {

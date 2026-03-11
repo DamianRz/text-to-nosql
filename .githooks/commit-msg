@@ -24,6 +24,6 @@ fi
 
 if ! printf "%s" "$first_line" | grep -Eq "$pattern"; then
   echo "Commit message title must follow <type>(<scope>): <description>." >&2
-  echo "Example: 📚 docs(readme): update installation instructions" >&2
+  echo "Example: docs(readme): update installation instructions" >&2
   exit 1
 fi
