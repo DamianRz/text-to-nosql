@@ -8,6 +8,10 @@ export const Page = styled.main`
     linear-gradient(180deg, #fbfcfe 0%, ${({ theme }) => theme.colors.background} 100%);
   color: ${({ theme }) => theme.colors.textPrimary};
   font-family: var(--font-ui), "Inter", sans-serif;
+
+  @media (max-width: 760px) {
+    padding: 12px;
+  }
 `;
 
 export const Container = styled.section`
@@ -22,6 +26,10 @@ export const Container = styled.section`
   @media (max-width: 1040px) {
     grid-template-columns: 1fr;
     min-height: auto;
+  }
+
+  @media (max-width: 760px) {
+    gap: 12px;
   }
 `;
 
@@ -38,6 +46,11 @@ export const Sidebar = styled.aside`
 
   @media (max-width: 1040px) {
     grid-row: auto;
+    order: 4;
+  }
+
+  @media (max-width: 760px) {
+    padding: 16px;
   }
 `;
 
@@ -149,10 +162,12 @@ export const Header = styled.header`
 
   @media (max-width: 1040px) {
     grid-column: 1;
+    order: 1;
   }
 
   @media (max-width: 760px) {
     flex-direction: column;
+    padding: 16px;
   }
 `;
 
@@ -184,6 +199,12 @@ export const PreviewSwitch = styled.div`
   gap: 12px;
   flex-wrap: wrap;
   justify-content: flex-end;
+
+  @media (max-width: 760px) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const PreviewLabel = styled.span`
@@ -199,6 +220,12 @@ export const PreviewPillGroup = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 999px;
   background: ${({ theme }) => theme.colors.panelMuted};
+
+  @media (max-width: 760px) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 `;
 
 export const PreviewPill = styled.button<{ $active: boolean }>`
@@ -212,6 +239,10 @@ export const PreviewPill = styled.button<{ $active: boolean }>`
   font-weight: 600;
   cursor: pointer;
 
+  @media (max-width: 760px) {
+    width: 100%;
+  }
+
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.accent};
     outline-offset: 2px;
@@ -224,6 +255,10 @@ export const LanguageField = styled.label`
   font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.textSecondary};
+
+  @media (max-width: 760px) {
+    width: 100%;
+  }
 `;
 
 export const Select = styled.select`
@@ -236,6 +271,11 @@ export const Select = styled.select`
   color: ${({ theme }) => theme.colors.textPrimary};
   font-size: 13px;
   font-family: var(--font-ui), "Inter", sans-serif;
+
+  @media (max-width: 760px) {
+    width: 100%;
+    min-width: 0;
+  }
 
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.accent};
@@ -251,6 +291,7 @@ export const WorkspaceColumn = styled.section`
 
   @media (max-width: 1040px) {
     grid-column: 1;
+    order: 2;
   }
 `;
 
@@ -262,5 +303,6 @@ export const ResultsColumn = styled.aside`
 
   @media (max-width: 1040px) {
     grid-column: 1;
+    order: 3;
   }
 `;

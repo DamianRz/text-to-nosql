@@ -120,6 +120,14 @@ export const copyByLanguage: Record<Language, CopyDictionary> = {
     demoLoadedMessage: "Demo cargada en el editor.",
     chatTitle: "Flujo guiado",
     workspaceDescription: "Una sola ruta clara: escribir, revisar, ejecutar y comprobar el resultado.",
+    quickStartTitle: "Inicio rapido",
+    quickStartBody: "En movil, primero enfocate en completar el flujo principal. Todo lo demas queda mas abajo para consulta.",
+    quickStartSteps: [
+      "Escribe una instruccion corta o carga un ejemplo.",
+      "Revisa la query Mongo Shell antes de tocar ejecutar.",
+      "Confirma el resultado y mira la coleccion afectada debajo."
+    ],
+    quickStartTip: "Consejo: para probar rapido, usa un ejemplo guiado y luego editalo desde el cuadro principal.",
     selectedDemoTitle: "Ejemplo seleccionado",
     selectedDemoHelper: "Puedes cargarlo al editor o ejecutarlo completo para ver el flujo entero.",
     statusTitle: "Estado del flujo",
@@ -261,6 +269,14 @@ export const copyByLanguage: Record<Language, CopyDictionary> = {
     demoLoadedMessage: "Demo loaded into editor.",
     chatTitle: "Guided workflow",
     workspaceDescription: "One clear path: write, review, execute, and verify the outcome.",
+    quickStartTitle: "Quick start",
+    quickStartBody: "On mobile, focus on the primary path first. Everything else stays below as supporting context.",
+    quickStartSteps: [
+      "Write a short instruction or load an example.",
+      "Review the Mongo Shell query before you run anything.",
+      "Confirm the result and inspect the affected collection below."
+    ],
+    quickStartTip: "Tip: for the fastest path, load a guided example and then edit it in the main input.",
     selectedDemoTitle: "Selected example",
     selectedDemoHelper: "You can load it into the editor or run the full path to see the complete flow.",
     statusTitle: "Workflow status",

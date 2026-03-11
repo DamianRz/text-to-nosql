@@ -21,6 +21,7 @@ import {
   PanelTitle,
   PipelineRail,
   PipelineStep,
+  QuickStartCard,
   Result,
   SectionHeader,
   SectionLabel,
@@ -31,6 +32,8 @@ import {
   Textarea,
   WorkflowCard,
   WorkflowGrid,
+  InstructionItem,
+  InstructionList,
   WorkflowMain,
   WorkflowSide,
   WorkspaceSection
@@ -208,6 +211,20 @@ export function ChatMongoWorkspacePanel({
 
       <WorkflowGrid>
         <WorkflowMain>
+          <QuickStartCard>
+            <div>
+              <SectionLabel>{copy.quickStartTitle}</SectionLabel>
+              <PanelTitle>{copy.workspaceDescription}</PanelTitle>
+            </div>
+            <SummaryText>{copy.quickStartBody}</SummaryText>
+            <InstructionList aria-label="quick-start-instructions">
+              {copy.quickStartSteps.map((step) => (
+                <InstructionItem key={step}>{step}</InstructionItem>
+              ))}
+            </InstructionList>
+            <MutedText>{copy.quickStartTip}</MutedText>
+          </QuickStartCard>
+
           <WorkflowCard>
             <WorkspaceSection>
               <SectionHeader>

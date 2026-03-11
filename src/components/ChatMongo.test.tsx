@@ -162,6 +162,8 @@ describe("ChatMongo", () => {
     await waitForLocalModelSelect();
 
     expect(screen.getByText("Ejemplos guiados")).toBeInTheDocument();
+    expect(screen.getByText("Inicio rapido")).toBeInTheDocument();
+    expect(screen.getByLabelText("quick-start-instructions")).toBeInTheDocument();
     expect(screen.getByLabelText("local-database-viewer")).toBeInTheDocument();
     expect(screen.queryByLabelText("presentation-breadcrumbs")).not.toBeInTheDocument();
   });

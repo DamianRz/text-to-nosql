@@ -8,6 +8,11 @@ export const Panel = styled.section`
   border-radius: ${({ theme }) => theme.radius.card};
   background: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadow};
+
+  @media (max-width: 760px) {
+    gap: 14px;
+    padding: 16px;
+  }
 `;
 
 export const PanelTitle = styled.h2`
@@ -125,7 +130,10 @@ export const PipelineRail = styled.div`
   gap: 10px;
 
   @media (max-width: 820px) {
-    grid-template-columns: 1fr;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(190px, 1fr);
+    overflow-x: auto;
+    padding-bottom: 4px;
   }
 `;
 
@@ -170,6 +178,39 @@ export const WorkflowCard = styled.section`
   border-radius: 14px;
   background: ${({ theme }) => theme.colors.surface};
   min-width: 0;
+
+  @media (max-width: 760px) {
+    padding: 16px;
+  }
+`;
+
+export const QuickStartCard = styled.section`
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(9, 105, 218, 0.18);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(9, 105, 218, 0.08), rgba(255, 255, 255, 0.96)),
+    ${({ theme }) => theme.colors.surface};
+
+  @media (max-width: 760px) {
+    padding: 16px;
+  }
+`;
+
+export const InstructionList = styled.ol`
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: 14px;
+  line-height: 1.6;
+`;
+
+export const InstructionItem = styled.li`
+  padding-left: 2px;
 `;
 
 export const SummaryCard = styled.div<{ $tone?: "default" | "danger" }>`
@@ -230,6 +271,11 @@ export const ActionRow = styled.div`
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+
+  @media (max-width: 760px) {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghost" | "danger" }>`
@@ -300,6 +346,11 @@ export const Button = styled.button<{ $variant?: "primary" | "secondary" | "ghos
     outline: 2px solid ${({ theme }) => theme.colors.accent};
     outline-offset: 2px;
   }
+
+  @media (max-width: 760px) {
+    width: 100%;
+    justify-content: center;
+  }
 `;
 
 export const Code = styled.pre`
@@ -359,6 +410,10 @@ export const CodeTokenNumber = styled.span`
 export const LogList = styled.div`
   display: grid;
   gap: 10px;
+
+  @media (max-width: 760px) {
+    gap: 8px;
+  }
 `;
 
 export const LogItem = styled.div`
@@ -392,6 +447,11 @@ export const DatabaseViewer = styled.section`
   border-radius: ${({ theme }) => theme.radius.card};
   background: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadow};
+
+  @media (max-width: 760px) {
+    gap: 14px;
+    padding: 16px;
+  }
 `;
 
 export const DatabaseViewerLayout = styled.div`
@@ -408,6 +468,13 @@ export const DatabaseSidebar = styled.div`
   display: grid;
   align-content: start;
   gap: 8px;
+
+  @media (max-width: 860px) {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(160px, 1fr);
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
 `;
 
 export const DatabaseCollectionButton = styled.button<{ $active: boolean }>`

@@ -14,4 +14,8 @@ Consolidate the current guided-workflow redesign, keep the Mongo query review st
 - Reviewed the pending diff and confirmed the main change is a clearer guided workflow: write, review, execute, and verify.
 - Verified the updated component tests for the redesigned workspace.
 - Added the Next.js WASM SWC fallback dependency required for Android builds.
-- Pending final validation and commit.
+- Added a mobile-first follow-up plan:
+  - Move the workspace ahead of the sidebar on narrow screens.
+  - Keep controls easy to tap and fast to scan on phones.
+  - Add a visible quick-start block at the top of the workflow.
+  - Re-run validation and deploy through the GitHub Pages workflow.

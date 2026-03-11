@@ -103,6 +103,10 @@ export interface CopyDictionary {
   demoLoadedMessage: string;
   chatTitle: string;
   workspaceDescription: string;
+  quickStartTitle: string;
+  quickStartBody: string;
+  quickStartSteps: string[];
+  quickStartTip: string;
   selectedDemoTitle: string;
   selectedDemoHelper: string;
   statusTitle: string;
