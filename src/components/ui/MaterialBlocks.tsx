@@ -35,12 +35,12 @@ export function SurfaceCard({
     <Paper
       sx={{
         p: compact ? 2.25 : { xs: 2.25, md: 3 },
-        borderRadius: 4,
+        borderRadius: "8px",
         height: "100%",
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)"
+        boxShadow: "0 4px 12px rgba(15, 23, 42, 0.04)"
       }}
     >
       <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={2}>
@@ -67,7 +67,7 @@ export function SurfaceCard({
 }
 
 export function StatusChip({ label, color = "default" }: { label: string; color?: "default" | "primary" | "success" | "warning" }) {
-  return <Chip label={label} color={color} size="small" variant={color === "default" ? "outlined" : "filled"} />;
+  return <Chip label={label} color={color} size="small" variant={color === "default" ? "outlined" : "filled"} sx={{ fontWeight: 600 }} />;
 }
 
 export function ActionButton({
@@ -101,7 +101,7 @@ export function CodePanel({
   return (
     <Paper
       sx={{
-        borderRadius: 4,
+        borderRadius: "8px",
         overflow: "hidden",
         bgcolor: "#0f172a",
         borderColor: "#0f172a"

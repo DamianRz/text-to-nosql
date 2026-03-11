@@ -24,10 +24,10 @@ const legacyTokens = {
     danger: "#b3261e"
   },
   radius: {
-    card: "16px",
-    control: "16px"
+    card: "8px",
+    control: "8px"
   },
-  shadow: "0 10px 30px rgba(15, 23, 42, 0.06)"
+  shadow: "0 4px 12px rgba(15, 23, 42, 0.04)"
 };
 
 export const appTheme = Object.assign(
@@ -63,7 +63,7 @@ export const appTheme = Object.assign(
     }
   },
   shape: {
-    borderRadius: 16
+    borderRadius: 8
   },
   typography: {
     fontFamily: 'var(--font-ui), "Roboto", "Helvetica", "Arial", sans-serif',
@@ -119,6 +119,7 @@ export const appTheme = Object.assign(
       styleOverrides: {
         root: {
           border: "1px solid #dbe3ee",
+          borderRadius: 8,
           backgroundImage: "none"
         }
       }
@@ -126,23 +127,44 @@ export const appTheme = Object.assign(
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 999,
-          minHeight: 42,
-          paddingInline: 18
+          borderRadius: 8,
+          minHeight: 40,
+          paddingInline: 16
         }
       }
     },
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 999
+          borderRadius: 6,
+          height: 26
+        },
+        label: {
+          paddingInline: 10
         }
       }
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          borderRadius: 8,
           backgroundColor: "#ffffff"
+        }
+      }
+    },
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          height: 2
+        }
+      }
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          minHeight: 44,
+          paddingInline: 12,
+          borderRadius: 0
         }
       }
     }
