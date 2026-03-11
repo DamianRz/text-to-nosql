@@ -96,6 +96,15 @@ const getDisplayResult = (mongoShell: string, result: unknown): string => {
   return "";
 };
 
+const detectHostedRuntime = (): boolean => {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const hostname = window.location.hostname;
+  return hostname !== "localhost" && hostname !== "127.0.0.1";
+};
+
 export function ChatMongo() {
   const messageSequenceRef = useRef(0);
   const [language, setLanguage] = useState<Language>("en");
@@ -108,8 +117,8 @@ export function ChatMongo() {
   const [error, setError] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
-  const [experienceMode, setExperienceMode] = useState<"hosted" | "local">("local");
-  const [isHostedRuntime, setIsHostedRuntime] = useState(false);
+  const [isHostedRuntime, setIsHostedRuntime] = useState<boolean>(() => detectHostedRuntime());
+  const [experienceMode, setExperienceMode] = useState<"hosted" | "local">(() => (detectHostedRuntime() ? "hosted" : "local"));
   const [availableModels, setAvailableModels] = useState<string[]>([DEFAULT_LOCAL_MODEL]);
   const [selectedModel, setSelectedModel] = useState(DEFAULT_LOCAL_MODEL);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
@@ -153,8 +162,7 @@ export function ChatMongo() {
   };
 
   useEffect(() => {
-    const hostname = window.location.hostname;
-    const hostedRuntime = hostname !== "localhost" && hostname !== "127.0.0.1";
+    const hostedRuntime = detectHostedRuntime();
     setIsHostedRuntime(hostedRuntime);
 
     if (hostedRuntime) {
